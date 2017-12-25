@@ -15,14 +15,20 @@ class Card:
         self.cardclass = cardclass
         self.properties = {}
 
-    def register_prop(self, name, prop):
-        self.properties[name] = prop
+    def register_prop(self, name, value):
+        self.properties[name] = value
 
-    def change_prop(self, name, prop):
+    def set_prop(self, name, value):
         if name in self.properties.keys():
-            self.properties[name] = prop
+            self.properties[name] = value
         else:
             raise KeyError('"%s" is not a valid property' % name)
+
+    def change_prop(self, name, amount):
+        if (not (isinstance(self.get_prop(name), int)
+                 or isinstance(self.get_prop(name), float))):
+            raise TypeError('prop %s can not be added to' % name)
+        self.properties[name] += amount
 
     def get_prop(self, name):
         return self.properties[name]

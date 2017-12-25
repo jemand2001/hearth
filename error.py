@@ -10,5 +10,3 @@ class Error(Exception):
 
 class ManaError(Error):
     pass
-
-

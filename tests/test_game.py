@@ -3,6 +3,7 @@ import random
 from ..player.player import Player
 from ..card.card import *
 from ..card.deck import Deck, Hand
+from ..error import *
 
 
 deck1 = {}
@@ -56,12 +57,14 @@ def test_create_players():
 
 
 def test_game_start():
-    special_card1 = Spell('I\'m special', 0, '10dmg', '*')
+    special_card1 = Spell('I\'m special', 0, '10_dmg', '*')
 
     # do 1 turn as p1
     p1.start_game()
     p1.deck.put_card_on_index(special_card1, len(p1.deck))
     p1.begin_turn()
     p1.play_card(-1, p2)
+    if p2.hero.get_prop('hp') == 30:
+        raise Error('')
     # then 1 turn as p2
     p2.start_game(start=False)
