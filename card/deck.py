@@ -1,0 +1,104 @@
+from .card import *
+import random
+
+
+class Deck:
+    def __init__(self, pclass, cards={}):
+        """
+        cards: dict/list of tuples that resembles cards with effects&stuff
+        \tformat: {`card_name`:
+        \t\t{`type`: type (as index of card.TYPES),
+        \t\t'dmg': x,
+        \t\t'mana': y,
+        \t\t'effects': [(`trigger1`, 'dostuff'),...]...},...}
+        """
+        self.pclass = pclass
+        if isinstance(cards, dict):
+            cards = cards
+
+        elif (isinstance(cards, list)
+              or isinstance(cards, tuple)):
+            cards = {}
+            for i in cards:
+                cards[i[0]] = i[1]
+
+        self.create_deck(cards)
+
+    def create_deck(self, cards):
+        self.deck = []
+        for i in cards.keys():
+            mana = cards[i]['mana']
+            cclass = cards[i]['cclass']
+            if TYPES[cards[i]['type']] == 'spell':
+                effect = cards[i]['effect']
+
+                new_card = Spell(mana, effect, cclass)
+
+            elif TYPES[cards[i]['type']] == 'minion':
+                hp = cards[i]['hp']
+                dmg = cards[i]['dmg']
+                try:
+                    abilities = cards[i]['effects']
+                except KeyError:
+                    abilities = ()
+
+                new_card = Minion(mana, hp, dmg, cclass, abilities)
+
+            elif TYPES[cards[i]['type']] == 'hero':
+                hp = cards[i]['hp']
+                effect = cards[i]['effect']
+
+                new_card = Hero(mana, cclass, hp, effect)
+
+            new_card.register_prop('in_deck', True)
+            new_card.register_prop('in_hand', False)
+            new_card.register_prop('in_graveyard', False)
+            if not isinstance(new_card, Spell):
+                new_card.register_prop('on_battlefield', False)
+            self.deck.append(new_card)
+
+        random.shuffle(self.deck)
+
+    def draw_card(self):
+        c = self.deck.pop()
+        c.change_prop('in_deck', False)
+        c.change_prop('in_hand', True)
+        return c
+
+    def shuffle_card(self, card):
+        """card: Card instance"""
+        i = random.randint(0, len(self.deck)+1)
+        self.deck.insert(i, card)
+
+    def show_card(self, ctype=''):
+        if ctype in ('', '*'):
+            return random.choice(self.deck)
+        if ctype.lower() in ('spell', 's', TYPES.index('spell')):
+            # make a collection of all spells in the deck
+            s = []
+            for i in self.deck:
+                if isinstance(i, Spell):
+                    s.append(i)
+            return random.choice(s)
+        if ctype.lower() in ('minion', 'm', TYPES.index('minion')):
+            # make a collection of all minions in the deck
+            m = []
+            for i in self.deck:
+                if isinstance(i, Minion):
+                    m.append(i)
+            return random.choice(m)
+        if ctype.lower() in ('hero', 'h', TYPES.index('hero')):
+            h = []
+            for i in self.deck:
+                if isinstance(i, Hero):
+                    h.append(i)
+            return random.choice(h)
+
+
+class Hand:
+    def __init__(self, deck, numcards=3):
+        """numcards: number of cards to draw\ndeck: deck from which to draw"""
+        self.deck = deck
+        self.hand = []
+        for i in range(numcards):
+            self.hand.append(self.deck.draw_card())
