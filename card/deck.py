@@ -8,9 +8,9 @@ class Deck:
         cards: dict/list of tuples that resembles cards with effects&stuff
         \tformat: {`card_name`:
         \t\t{`type`: type (as index of card.TYPES),
-        \t\t'dmg': x,
-        \t\t'mana': y,
-        \t\t'effects': [(`trigger1`, 'dostuff'),...]...},...}
+        \t\t 'dmg': x,
+        \t\t 'mana': y,
+        \t\t 'effects': [(`trigger1`, 'dostuff'),...]...},...}
         """
         self.pclass = pclass
         if isinstance(cards, dict):
@@ -32,7 +32,7 @@ class Deck:
             if TYPES[cards[i]['type']] == 'spell':
                 effect = cards[i]['effect']
 
-                new_card = Spell(mana, effect, cclass)
+                new_card = Spell(i, mana, effect, cclass)
 
             elif TYPES[cards[i]['type']] == 'minion':
                 hp = cards[i]['hp']
@@ -42,20 +42,22 @@ class Deck:
                 except KeyError:
                     abilities = ()
 
-                new_card = Minion(mana, hp, dmg, cclass, abilities)
+                new_card = Minion(i, mana, hp, dmg, cclass, abilities)
 
             elif TYPES[cards[i]['type']] == 'hero':
                 hp = cards[i]['hp']
                 effect = cards[i]['effect']
 
-                new_card = Hero(mana, cclass, hp, effect)
+                new_card = Hero(i, mana, cclass, hp, effect)
 
+            """
             new_card.register_prop('in_deck', True)
             new_card.register_prop('in_hand', False)
             new_card.register_prop('in_graveyard', False)
             if not isinstance(new_card, Spell):
                 new_card.register_prop('on_battlefield', False)
-            self.deck.append(new_card)
+            self.deck.append(new_card)"""
+            self.put_card_on_index(new_card, 0)
 
         random.shuffle(self.deck)
 
@@ -68,7 +70,18 @@ class Deck:
     def shuffle_card(self, card):
         """card: Card instance"""
         i = random.randint(0, len(self.deck)+1)
-        self.deck.insert(i, card)
+        put_card_on_index(card, i)
+
+    def put_card_on_index(self, card, index=0):
+        if isinstance(card, Card):
+            self.deck.insert(index, card)
+            card.register_prop('in_deck', True)
+            card.register_prop('in_hand', False)
+            card.register_prop('in_graveyard', False)
+            if not isinstance(card, Spell):
+                card.register_prop('on_battlefield', False)
+        else:
+            raise TypeError('tried to add non-card to deck')
 
     def show_card(self, ctype=''):
         if ctype in ('', '*'):
@@ -94,6 +107,9 @@ class Deck:
                     h.append(i)
             return random.choice(h)
 
+    def __len__(self):
+        return len(self.deck)
+
 
 class Hand:
     def __init__(self, deck, numcards=3):
@@ -101,4 +117,13 @@ class Hand:
         self.deck = deck
         self.hand = []
         for i in range(numcards):
-            self.hand.append(self.deck.draw_card())
+            self.draw()
+
+    def draw(self):
+        self.add_card_to_hand(self.deck.draw_card())
+
+    def add_card_to_hand(self, card):
+        self.hand.append(card)
+
+    def __getitem__(self, index):
+        return self.hand[index]

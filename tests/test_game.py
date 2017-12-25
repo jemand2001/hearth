@@ -51,6 +51,17 @@ def create_players():
     p2 = Player(1, d2)
 
 
-def test_crate_players():
+def test_create_players():
     create_players()
 
+
+def test_game_start():
+    special_card1 = Spell('I\'m special', 0, '10dmg', '*')
+
+    # do 1 turn as p1
+    p1.start_game()
+    p1.deck.put_card_on_index(special_card1, len(p1.deck))
+    p1.begin_turn()
+    p1.play_card(-1, p2)
+    # then 1 turn as p2
+    p2.start_game(start=False)

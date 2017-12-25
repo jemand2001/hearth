@@ -5,7 +5,7 @@ TYPES = ('spell', 'minion', 'hero',)
 
 
 class Card:
-    def __init__(self, mana, cardtype, cardclass):
+    def __init__(self, name, mana, cardtype, cardclass):
         """
         mana:       cost in mana      (int)
         cardtype:   type of the card  (int)
@@ -27,19 +27,22 @@ class Card:
     def get_prop(self, name):
         return self.properties[name]
 
+    def exists_prop(self, name):
+        return name in self.properties.keys()
+
     def use(self, player, target):
         """target: target card (provided by GUI//mouse controller)"""
         self.play(player, target)
 
 
 class Minion(Card):
-    def __init__(self, mana, hp, dmg, cclass, abilities):
+    def __init__(self, name, mana, hp, dmg, cclass, abilities):
         """
         mana: cost in mana (int)
         hp:   health points (int)
         dmg:  damage (int)
         abilities: effects that happen when something happens (str=str)"""
-        Card.__init__(self, mana, TYPES.index('minion'), cclass)
+        Card.__init__(self, name, mana, TYPES.index('minion'), cclass)
         self.register_prop('hp', hp)
         self.register_prop('dmg', dmg)
         if abilities != ():
@@ -69,25 +72,25 @@ class Minion(Card):
 
 
 class Spell(Card):
-    def __init__(self, mana, effect, cclass):
+    def __init__(self, name, mana, effect, cclass):
         """
         mana:   cost in mana (int)
-        effect: spell effect (func, I guess?)"""
-        Card.__init__(self, mana, TYPES.index('spell'), cclass)
+        effect: spell effect (str)"""
+        Card.__init__(self, name, mana, TYPES.index('spell'), cclass)
         self.register_prop('effect', effect)
 
-    def play(self, target):
+    def play(self, player, target):
         # TODO: need to add a register of effects and how they work
         self.change_prop('in_hand', False)
         self.change_prop('in_graveyard', True)
 
 
 class Hero(Card):
-    def __init__(self, mana=0, cardclass='', hp=30, effect=None):
+    def __init__(self, name, mana=0, cardclass='', hp=30, effect=None):
         """
-        mana:   cost in mana (int)x
+        mana:   cost in mana (int)
         effect: spell effect (func, I guess)"""
-        Card.__init__(self, mana, TYPES.index('hero'), cardclass)
+        Card.__init__(self, name, mana, TYPES.index('hero'), cardclass)
         self.register_prop('effect', None)
         self.register_prop('hp', hp)
 
