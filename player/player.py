@@ -19,16 +19,17 @@ class Player:
         self.hero = c[list(c.keys())[pclass]][0]
         self.deck = deck
         self.mana = self.actualmana = mana
+        self.spellpower = 0
 
         self.battlefield = {
             'hero': self.hero,
             'minions': []
         }
 
-    def play_card(self, index, target='board'):
+    def play_card(self, board, index, target='board'):
         c = self.hand[index]
         if c.cost <= self.actualmana:
-            c.play(self, target)
+            c.use(board, self, target)
             self.actualmana -= c.cost
         else:
             raise ManaError('Not enough mana(%i < %i)!' % (c.cost,

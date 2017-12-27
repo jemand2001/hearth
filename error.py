@@ -10,3 +10,7 @@ class Error(Exception):
 
 class ManaError(Error):
     pass
+
+
+class FriendlyEnemyError(Error):
+    pass

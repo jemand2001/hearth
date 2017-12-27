@@ -4,6 +4,7 @@ from ..player.player import Player
 from ..card.card import *
 from ..card.deck import Deck, Hand
 from ..error import *
+from ..board import Board
 
 
 deck1 = {}
@@ -47,9 +48,10 @@ def test_create_decks():
 
 
 def create_players():
-    global p1, p2
+    global p1, p2, myboard
     p1 = Player(0, d1)
     p2 = Player(1, d2)
+    myboard = Board(p1, p2)
 
 
 def test_create_players():
@@ -63,7 +65,7 @@ def test_game_start():
     p1.start_game()
     p1.deck.put_card_on_index(special_card1, len(p1.deck))
     p1.begin_turn()
-    p1.play_card(-1, p2)
+    p1.play_card(myboard, -1, p2.hero)
     if p2.hero.get_prop('hp') == 30:
         raise Error('')
     # then 1 turn as p2
