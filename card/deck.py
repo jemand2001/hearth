@@ -1,4 +1,7 @@
 from .card import *
+from .minion import Minion
+from .spell import Spell
+from .hero import Hero
 import random
 
 

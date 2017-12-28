@@ -1,4 +1,4 @@
-from ..card.card import Hero
+from ..card.hero import Hero
 from ..card.deck import Deck, Hand
 from ..data import CLASSES
 from ..error import ManaError

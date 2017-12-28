@@ -1,4 +1,4 @@
-from .card.card import Hero
+from .card.hero import Hero
 
 
 # CLASSES = ('warrior', 'mage')

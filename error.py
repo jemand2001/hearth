@@ -14,3 +14,7 @@ class ManaError(Error):
 
 class FriendlyEnemyError(Error):
     pass
+
+
+class TargetError(Error):
+    pass

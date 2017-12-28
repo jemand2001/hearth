@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import random
 from ..player.player import Player
-from ..card.card import *
+from ..card.hero import *
+from ..card.minion import *
+from ..card.spell import *
 from ..card.deck import Deck, Hand
 from ..error import *
 from ..board import Board
@@ -60,13 +62,18 @@ def test_create_players():
 
 def test_game_start():
     special_card1 = Spell('I\'m special', 0, '10_dmg', '*')
+    special_card2 = Spell('I\'m special too', 0, '10_heal', '*')
 
     # do 1 turn as p1
     p1.start_game()
     p1.deck.put_card_on_index(special_card1, len(p1.deck))
     p1.begin_turn()
     p1.play_card(myboard, -1, p2.hero)
-    if p2.hero.get_prop('hp') == 30:
-        raise Error('')
+
     # then 1 turn as p2
     p2.start_game(start=False)
+    p2.deck.put_card_on_index(special_card2, len(p2.deck))
+    p2.begin_turn()
+    p2.play_card(myboard, -1, p2.hero)
+    if p2.hero.get_prop('hp') != 30:
+        raise Error('')
