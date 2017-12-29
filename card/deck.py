@@ -43,7 +43,7 @@ class Deck:
                 try:
                     abilities = cards[i]['effects']
                 except KeyError:
-                    abilities = ()
+                    abilities = {}
 
                 new_card = Minion(i, mana, hp, dmg, cclass, abilities)
 

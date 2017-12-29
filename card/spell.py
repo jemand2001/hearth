@@ -3,7 +3,7 @@ from .effects import Effect
 
 
 class Spell(Card):
-    def __init__(self, name, mana, effect, cclass):
+    def __init__(self, name, mana, effect, cclass='*'):
         """
         mana:   cost in mana (int)
         effect: spell effect (str)"""
@@ -15,3 +15,12 @@ class Spell(Card):
         self.get_prop('effect').do_effect(self, board, player, target)
         self.change_prop('in_hand', False)
         self.change_prop('in_graveyard', True)
+
+    def copy(self):
+        new_card = Spell(self.name,
+                         self.cost,
+                         TYPES.index(self.ctype),
+                         self.cardclass)
+        for i in self.properties.keys():
+            new_card.register_prop(i, self.get_prop(i))
+        return new_card

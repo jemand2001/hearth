@@ -38,12 +38,3 @@ class Card:
 
     def exists_prop(self, name):
         return name in self.properties.keys()
-
-    def copy(self):
-        new_card = Card(self.name,
-                        self.cost,
-                        TYPES.index(self.ctype),
-                        self.cardclass)
-        for i in self.properties.keys():
-            new_card.register_prop(i, self.get_prop(i))
-        return new_card

@@ -13,9 +13,9 @@ class Minion(Card):
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
         self.register_prop('dmg', dmg)
-        if abilities != ():
-            for i in abilities:
-                self.register_prop(i[0], Effect(i[1]))
+        if abilities != {}:
+            for i in abilities.keys():
+                self.register_prop(i, Effect(abilities[i]))
 
     def attack(self, target):
         if self.getprop('dmg') == 0:
@@ -58,3 +58,12 @@ class Minion(Card):
             self.get_prop('deathrattle').do_effect(self,
                                                    self.board,
                                                    self.get_prop('player'))
+
+    def copy(self):
+        new_card = Minion(self.name,
+                          self.cost,
+                          TYPES.index(self.ctype),
+                          self.cardclass)
+        for i in self.properties.keys():
+            new_card.register_prop(i, self.get_prop(i))
+        return new_card

@@ -18,6 +18,7 @@ def minion():
     from ..card.minion import Minion as Minion
     return Minion
 
+
 @pytest.fixture(scope='session')
 def spell():
     from ..card.spell import Spell as Spell
@@ -39,3 +40,9 @@ def error():
 def board():
     from ..board import Board
     return Board
+
+
+@pytest.fixture(scope='session')
+def game():
+    from ..game import Game
+    return Game

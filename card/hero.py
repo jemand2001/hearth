@@ -14,7 +14,8 @@ class Hero(Card):
 
     def play(self, board, player, target):
         # do effect...
-        self.get_prop('effect').do_effect(board, player, target)
+        self.get_prop('effect').do_effect(self, board, player, target)
+
         player.battlefield['hero'] = self
         player.health = self.get_prop('hp')
         self.change_prop('in_hand', False)
@@ -33,3 +34,12 @@ class Hero(Card):
     def die(self):
         # TODO: The game should end here. I need to implement this!
         pass
+
+    def copy(self):
+        new_card = Hero(self.name,
+                        self.cost,
+                        TYPES.index(self.ctype),
+                        self.cardclass)
+        for i in self.properties.keys():
+            new_card.register_prop(i, self.get_prop(i))
+        return new_card

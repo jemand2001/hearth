@@ -1,23 +1,21 @@
 from ..card.hero import Hero
 from ..card.deck import Deck, Hand
 from ..data import CLASSES
-from ..error import ManaError
+from ..error import ManaError, TimeError
 
 
-c = {}
-for i in CLASSES.keys():
-    c[i] = CLASSES[i]
+c = CLASSES
 
 
 class Player:
-    def __init__(self, pclass, deck, hp=None, mana=0):
+    def __init__(self, pclass, deck, mana=0):
         """pclass: class of the player (int)"""
-        if hp is None:
-            self.health = c[list(c.keys())[pclass]][1]
-
         self.pclass = list(c.keys())[pclass]
-        self.hero = c[list(c.keys())[pclass]][0]
-        self.deck = deck
+        self.hero = c[list(c.keys())[pclass]][0].copy()
+        if isinstance(deck, Deck):
+            self.deck = deck
+        else:
+            self.deck = Deck(pclass, deck)
         self.mana = self.actualmana = mana
         self.spellpower = 0
 
@@ -27,6 +25,8 @@ class Player:
         }
 
     def play_card(self, index, target='board'):
+        if not self.on:
+            raise TimeError('Tried to play a card outside own turn!')
         c = self.hand[index]
         if c.cost <= self.actualmana:
             c.play(self.board, self, target)
@@ -43,13 +43,27 @@ class Player:
 
     def begin_turn(self):
         # on_start_of_turn effects
-        for i in self.battlefield['minions']:
-            if i.exists_prop('on_turn_start'):
-                effect = i.get_prop('on_turn_start')
-                i.get_prop('on_turn_start').do_effect(i.ctype,
-                                                      self.board,
-                                                      self)
-
+        self.on = True
+        for i in self.collect_by_trigger('on_turn_start'):
+            effect = i.get_prop('on_turn_start')
+            effect.do_effect(i,
+                             self.board,
+                             self)
         self.mana = min((self.mana+1, 10))
         self.actualmana = self.mana
         self.hand.draw()
+
+    def end_turn(self):
+        self.on = False
+        for i in self.collect_by_trigger('on_turn_end'):
+            effect = i.get_prop('on_turn_end')
+            effect.do_effect(i,
+                             self.board,
+                             self)
+
+    def collect_by_trigger(self, trigger):
+        res = []
+        for i in self.battlefield['minions']:
+            if i.exists_prop(trigger):
+                res.append(i)
+        return res

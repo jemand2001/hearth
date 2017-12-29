@@ -18,3 +18,7 @@ class FriendlyEnemyError(Error):
 
 class TargetError(Error):
     pass
+
+
+class TimeError(Error):
+    pass

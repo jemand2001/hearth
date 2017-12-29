@@ -39,12 +39,12 @@ class Effect:
             amount = int(parts[0])
             self.effect['type'] = parts[1]
             self.effect['amount'] = amount
-            if len(parts) > 2:
+            if len(parts) > 3:
                 if parts[3] == 'all':
                     self.effect['targets'] = parts[3]
-                    if len(parts) > 3:
+                    if len(parts) > 4:
                         self.effect['targets'] += parts[4]
-                        if len(parts) == 5:
+                        if len(parts) == 6:
                             self.effect['targets'] += parts[5]
 
                 elif parts[3] == 'any':
@@ -150,11 +150,13 @@ class Effect:
                         if target is aplayer.hero:
                             aplayer.hero.get_damaged(amount)
                         else:
-                            for i in aplayer.battlefield['minions']:
-                                if target is i:
-                                    i.get_damaged(amount)
+                            if target in aplayer.battlefield['minions']:
+                                target.get_damaged(amount)
 
         elif self.effect['type'] == 'heal':
+            if amount == -1:
+                # full heal
+                amount = 99
             if 'targets' in self.effect.keys():
                 if self.effect['targets'] == 'self':
                     if card.ctype == 'spell':
@@ -169,7 +171,8 @@ class Effect:
 
                 elif self.effect['targets'][:11] == 'allfriendly':
                     if self.effect['targets'][11:] == '':
-                        for i in player.battlefield:
+                        player.hero.get_healed(amount)
+                        for i in player.battlefield['minions']:
                             i.get_healed(amount)
 
                     elif self.effect['targets'][11:] == 'minions':
