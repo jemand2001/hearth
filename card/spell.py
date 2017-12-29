@@ -12,6 +12,6 @@ class Spell(Card):
 
     def play(self, board, player, target):
         # TODO: need to add a register of effects and how they work
-        self.get_prop('effect').do_effect(self.ctype, board, player, target)
+        self.get_prop('effect').do_effect(self, board, player, target)
         self.change_prop('in_hand', False)
         self.change_prop('in_graveyard', True)

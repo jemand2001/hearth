@@ -8,7 +8,7 @@ class Minion(Card):
         mana: cost in mana (int)
         hp:   health points (int)
         dmg:  damage (int)
-        abilities: effects that happen when something happens (str=str)"""
+        abilities: effects that happen when something happens ((str,str))"""
         Card.__init__(self, name, mana, TYPES.index('minion'), cclass)
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
@@ -25,9 +25,8 @@ class Minion(Card):
 
     def play(self, board, player, target):
         self.summon(board, player, 'hand')
-        if ('battlecry' in self.properties.keys() and (
-                self.get_prop('in_hand') is True)):
-            print('WAAAH!')
+        if self.exists_prop('battlecry'):
+            self.get_prop('battlecry').do_effect(self, board, player, target)
 
     def summon(self, board, player, from_where):
         if from_where == 'hand':
@@ -43,7 +42,7 @@ class Minion(Card):
         self.change_prop('hp', -amount)
         if self.exists_prop('on_dmg'):
             # V This call is incomplete!
-            self.get_prop('on_dmg').do_effect(self.ctype,
+            self.get_prop('on_dmg').do_effect(self,
                                               self.get_prop('board'),
                                               self.get_prop('player'))
         if self.get_prop('hp') <= 0:
@@ -56,6 +55,6 @@ class Minion(Card):
 
     def die(self):
         if self.exists_prop('deathrattle'):
-            self.get_prop('deathrattle').do_effect(self.ctype,
+            self.get_prop('deathrattle').do_effect(self,
                                                    self.board,
                                                    self.get_prop('player'))

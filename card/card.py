@@ -1,5 +1,5 @@
 # from ..data import CLASSES
-from .effects import Effect
+# from .effects import Effect
 
 
 TYPES = ('spell', 'minion', 'hero',)
@@ -38,10 +38,6 @@ class Card:
 
     def exists_prop(self, name):
         return name in self.properties.keys()
-
-    def use(self, board, player, target):
-        """target: target card (provided by GUI//mouse controller)"""
-        self.play(board, player, target)
 
     def copy(self):
         new_card = Card(self.name,

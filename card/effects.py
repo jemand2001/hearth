@@ -1,5 +1,5 @@
 from ..error import *
-# from .card import Card
+from .card import Card
 
 
 class Effect:
@@ -32,7 +32,8 @@ class Effect:
             #        _to_any_[friendly|enemy]|
             #            all[friendly|enemy][minions|heros]|
             #                 [friendly|enemy](minions|heros)|
-            #                 (frienly|enemy)hero|]'
+            #                 (frienly|enemy)hero|]|
+            #            self'
             # x = amount; target defaults to any
             #################
             amount = int(parts[0])
@@ -53,13 +54,17 @@ class Effect:
 
                         if len(parts) == 5:
                             self.effect['validtargets'] += parts[5]
+
+                elif parts[3] == 'self':
+                    self.effect['targets'] = 'self'
+
             else:
                 self.effect['validtargets'] = 'any'
 
     def change_side(self, target):  # like: mind control
         pass
 
-    def do_effect(self, ctype, board, player, target='board'):
+    def do_effect(self, card, board, player, target='board'):
         """board: Board instance (the only one in the game, i'd hope)
         player: Player that the card this effect is caused by belongs to
         target: the effect's target card"""
@@ -69,17 +74,25 @@ class Effect:
 
         if isinstance(self.effect, list):
             for i in self.effect:
-                i.do_effect(ctype, board, player, target)
+                i.do_effect(card, board, player, target)
                 return
 
-        if 'amount' in self.effect.keys() and ctype == 'spell':
+        if 'amount' in self.effect.keys() and card.ctype == 'spell':
             amount = self.effect['amount'] + player.spellpower
         else:
             amount = self.effect['amount']
 
+        # assert 0, self.effect
+
         if self.effect['type'] == 'dmg':
             if 'targets' in self.effect.keys():
-                if self.effect['targets'] == 'all':
+                if self.effect['targets'] == 'self':
+                    if card.ctype == 'spell':
+                        player.hero.get_damaged(amount)
+                    else:
+                        card.get_damaged(amount)
+
+                elif self.effect['targets'] == 'all':
                     for aplayer in board.players:
                         aplayer.hero.get_damaged(amount)
                         for i in aplayer.battlefield['minions']:
@@ -143,7 +156,12 @@ class Effect:
 
         elif self.effect['type'] == 'heal':
             if 'targets' in self.effect.keys():
-                if self.effect['targets'] == 'all':
+                if self.effect['targets'] == 'self':
+                    if card.ctype == 'spell':
+                        player.hero.get_healed(amount)
+                    else:
+                        card.get_healed(amount)
+                elif self.effect['targets'] == 'all':
                     for aplayer in board.players:
                         aplayer.hero.get_healed(amount)
                         for i in aplayer.battlefield['minions']:

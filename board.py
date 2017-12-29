@@ -1,4 +1,4 @@
-from .error import FriendlyEnemyError
+from error import FriendlyEnemyError
 
 
 class Board:

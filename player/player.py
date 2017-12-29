@@ -26,10 +26,10 @@ class Player:
             'minions': []
         }
 
-    def play_card(self, board, index, target='board'):
+    def play_card(self, index, target='board'):
         c = self.hand[index]
         if c.cost <= self.actualmana:
-            c.use(board, self, target)
+            c.play(self.board, self, target)
             self.actualmana -= c.cost
         else:
             raise ManaError('Not enough mana(%i < %i)!' % (c.cost,
@@ -46,8 +46,10 @@ class Player:
         for i in self.battlefield['minions']:
             if i.exists_prop('on_turn_start'):
                 effect = i.get_prop('on_turn_start')
-                # do effect(effect)?
-                print('TURN HAS STARTED!')
+                i.get_prop('on_turn_start').do_effect(i.ctype,
+                                                      self.board,
+                                                      self)
 
-        self.mana += 1
+        self.mana = min((self.mana+1, 10))
+        self.actualmana = self.mana
         self.hand.draw()

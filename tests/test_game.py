@@ -1,12 +1,8 @@
-#!/usr/bin/env python3
+# #!/usr/bin/env python3
 import random
-from ..player.player import Player
-from ..card.hero import *
-from ..card.minion import *
-from ..card.spell import *
-from ..card.deck import Deck, Hand
-from ..error import *
-from ..board import Board
+
+
+random.seed(0)
 
 
 deck1 = {}
@@ -39,41 +35,65 @@ for i in range(30):
         deck2[cname]['dmg'] = random.randint(0, 10)
 
 
-def create_decks():
+def create_decks(Deck):
     global d1, d2
     d1 = Deck(0, deck1)
     d2 = Deck(1, deck2)
 
 
-def test_create_decks():
-    create_decks()
+def test_create_decks(deck):
+    create_decks(deck)
 
 
-def create_players():
+def create_players(Player, Board):
     global p1, p2, myboard
     p1 = Player(0, d1)
     p2 = Player(1, d2)
     myboard = Board(p1, p2)
+    p1.board = myboard
+    p2.board = myboard
 
 
-def test_create_players():
-    create_players()
+def test_create_players(player, board):
+    create_players(player, board)
 
 
-def test_game_start():
+def game_start_p1(Spell):
     special_card1 = Spell('I\'m special', 0, '10_dmg', '*')
-    special_card2 = Spell('I\'m special too', 0, '10_heal', '*')
-
-    # do 1 turn as p1
     p1.start_game()
     p1.deck.put_card_on_index(special_card1, len(p1.deck))
     p1.begin_turn()
-    p1.play_card(myboard, -1, p2.hero)
+    p1.play_card(-1, p2.hero)
 
-    # then 1 turn as p2
+
+def game_start_p2(Spell):
+    special_card2 = Spell('I\'m special too', 0, '10_heal', '*')
     p2.start_game(start=False)
     p2.deck.put_card_on_index(special_card2, len(p2.deck))
     p2.begin_turn()
-    p2.play_card(myboard, -1, p2.hero)
-    if p2.hero.get_prop('hp') != 30:
-        raise Error('')
+    p2.play_card(-1, p2.hero)
+
+
+def test_game_start(spell):
+    # do 1 turn as p1
+    game_start_p1(spell)
+
+    # then 1 turn as p2
+    game_start_p2(spell)
+
+
+def round2_p1(Minion):
+    special_card1 = Minion('I\'m also special', 0, 5, 5, '*',
+                           (('battlecry', '1_dmg_to_self'),))
+
+    p1.deck.put_card_on_index(special_card1, len(p1.deck))
+    p1.begin_turn()
+    p1.play_card(-1)
+    # assert 0, special_card1.properties
+    assert special_card1 in p1.battlefield['minions']
+    assert p1.battlefield['minions'][0] is special_card1
+    assert special_card1.get_prop('hp') == 4
+
+
+def test_round2(minion):
+    round2_p1(minion)
