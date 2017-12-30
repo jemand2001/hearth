@@ -26,12 +26,17 @@ class Game:
         return player1
 
     def turn(self):
-        pass
+        self.startplayer.start_turn()
+        # now i need some mechanic to get all the actions & stuff
+        # i'll work on gui system now
+        self.startplayer.end_turn()
+
+        self.otherplayer.start_turn()
+        self.otherplayer.end_turn()
 
     def start(self):
         startplayer_name = random.choice(self.players.keys())
         self.startplayer = self.players[startplayer_name]
-
         self.startplayer.start_game()
-
         self.otherplayer = self.board.get_enemy(self.startplayer)
+        self.otherplayer.start_game(False)
