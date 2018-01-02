@@ -1,4 +1,4 @@
-from ..card.hero import Hero
+from card.hero import Hero
 from os import path
 
 

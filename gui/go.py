@@ -57,7 +57,7 @@ class Text:
 
 if __name__ == '__main__':
     from os import path
-    from ..data import IMG_PATH
+    from game.data import IMG_PATH
     pygame.init()
     s = pygame.display.set_mode([1366, 768])
     # s.fill((255, 255, 255))
@@ -72,8 +72,7 @@ if __name__ == '__main__':
                 key_ctrl = True
             elif i.type == pygame.K_q:
                 key_q = True
-            if (i.type == pygame.QUIT
-                or i.type == pygame.K_ESCAPE):
+            if i.type == pygame.QUIT or i.type == pygame.K_ESCAPE:
                 import sys
                 sys.exit()
 

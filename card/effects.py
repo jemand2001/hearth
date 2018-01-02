@@ -1,4 +1,4 @@
-from ..game.error import *
+from game.error import *
 from .card import Card
 
 
