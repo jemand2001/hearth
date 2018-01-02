@@ -1,7 +1,7 @@
 from ..card.hero import Hero
 from ..card.deck import Deck, Hand
-from ..data import CLASSES
-from ..error import ManaError, TimeError
+from ..game.data import CLASSES
+from ..game.error import ManaError, TimeError
 
 
 c = CLASSES

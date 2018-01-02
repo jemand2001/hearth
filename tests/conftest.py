@@ -9,7 +9,7 @@ def hero():
 
 @pytest.fixture(scope='session')
 def player():
-    from ..player.player import Player
+    from ..game.player import Player
     return Player
 
 
@@ -27,22 +27,28 @@ def spell():
 
 @pytest.fixture(scope='session')
 def deck():
-    from ..card.deck import Deck, Hand
+    from ..card.deck import Deck
     return Deck
 
 
 @pytest.fixture(scope='session')
+def hand():
+    from ..card.deck import Hand
+    return Hand
+
+
+@pytest.fixture(scope='session')
 def error():
-    from ..error import *
+    from ..game.error import *
 
 
 @pytest.fixture(scope='session')
 def board():
-    from ..board import Board
+    from ..game.board import Board
     return Board
 
 
 @pytest.fixture(scope='session')
 def game():
-    from ..game import Game
+    from ..game.game import Game
     return Game

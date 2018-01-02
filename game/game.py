@@ -1,6 +1,6 @@
 import random
 from board import Board
-from player.player import Player, CLASSES
+from player import Player, CLASSES
 
 
 class Game:

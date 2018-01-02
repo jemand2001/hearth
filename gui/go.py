@@ -56,23 +56,29 @@ class Text:
 
 
 if __name__ == '__main__':
+    from os import path
+    from ..data import IMG_PATH
     pygame.init()
     s = pygame.display.set_mode([1366, 768])
     # s.fill((255, 255, 255))
-    mygo = GameObject(s, 'little_friend2.png')
+    testpath = path.join(IMG_PATH, 'test', 'little_friend2.png')
+    mygo = GameObject(s, testpath)
 
     while 1:
-        key_q = key_ctrl = False
+        key_q = key_ctrl = esc = False
         for i in pygame.event.get():
             # print('event:', i)
             if i.type == pygame.K_LCTRL or i.type == pygame.K_RCTRL:
                 key_ctrl = True
-            if i.type == pygame.K_q:
+            elif i.type == pygame.K_q:
                 key_q = True
-            if i.type == pygame.QUIT or (key_ctrl and key_q):
+            if (i.type == pygame.QUIT
+                or i.type == pygame.K_ESCAPE):
                 import sys
                 sys.exit()
+
+        if key_ctrl and key_q:
+            import sys
+            sys.exit()
         mygo.draw(pos1=(10, 20), debug=True)
         pygame.display.flip()
-
-# or i.type == pygame.K_ESC
