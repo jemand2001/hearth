@@ -119,10 +119,21 @@ class Effect:
 
         if 'targets' in self.effect.keys() or 'validtargets' in self.effect.keys():
             targets = self.specify_target()
+        else:
+            targets = None
 
         aplayer = board.get_enemy(player)
 
         # assert 0, self.effect
+
+        if ((targets[:11] == 'anyfriendly'
+             and target is not player.hero
+             and target not in player.battlefield['minions'])
+            or targets[:8] == 'anyenemy'
+             and target is not aplayer.hero
+             and target not in aplayer.battlefield['minions']):
+            raise FriendlyEnemyError('This effect can only work'
+                                     ' on the other side.')
 
         if self.effect['type'] == 'dmg':
             if targets == 'self':
@@ -136,14 +147,14 @@ class Effect:
                     for i in theplayer.battlefield['minions']:
                         i.get_damaged(amount)
             elif targets == 'allfriendly':
-                if self.effect['targets'][11:] == '':
-                    for i in player.battlefield:
-                        i.get_damaged(amount)
+                player.hero.get_damaged(amount)
+                for i in player.battlefield['minions']:
+                    i.get_damaged(amount)
             elif targets == 'allfriendlyminions':
                 for i in player.battlefield['minions']:
                     i.get_damaged(amount)
             elif target == 'allfriendlyhero':
-                        player.hero.get_damaged(amount)
+                player.hero.get_damaged(amount)
             elif targets == 'allenemy':
                 aplayer.hero.get_damaged(amount)
                 for i in aplayer.battlefield['minions']:
@@ -154,53 +165,49 @@ class Effect:
             elif targets == 'allenemyhero':
                 aplayer.hero.get_damaged(amount)
 
-            elif 'validtargets' in self.effect.keys():
-                if targets == 'any':
+            if targets == 'any':
+                target.get_damaged(amount)
+            elif ((targets == 'anyfriendlyminion'
+                   and target in player.battlefield['minions'])):
+                target.get_damaged(amount)
+            elif (targets == 'anyfriendly'
+                  and (target is player.hero
+                       or target in player.battlefield['minions'])):
+                target.get_damaged(amount)
+
+            elif targets == 'anyenemy':
+                if target is aplayer.hero:
+                    aplayer.hero.get_damaged(amount)
+                elif target in aplayer.battlefield['minions']:
                     target.get_damaged(amount)
-                if ((targets == 'anyfriendlyminions'
-                     and target in player.battlefield['minions'])):
+            elif targets == 'anyenemyminion':
+                if target in aplayer.battlefield['minions']:
                     target.get_damaged(amount)
-                elif (target is player.hero
-                      or target in player.battlefield['minions']):
-                    target.get_damaged(amount)
-                else:
-                    raise FriendlyEnemyError('This effect can only work'
-                                             ' on friendly characters.')
-                elif targets == 'anyenemy':
-                    if target is aplayer.hero:
-                        aplayer.hero.get_damaged(amount)
-                    elif target in aplayer.battlefield['minions']:
-                        target.get_damaged(amount)
-                elif targets == 'anyenemyminion':
-                    if target in aplayer.battlefield['minions']:
-                        target.get_damaged(amount)
-                    else:
-                        raise FriendlyEnemyError('This effect can only work'
-                                                 ' on enemy characters.')
 
         elif self.effect['type'] == 'heal':
             if amount == -1:
                 # full heal
                 amount = 99999999L
+
             if targets == 'self':
                 if card.ctype == 'spell':
                     player.hero.get_healed(amount)
                 else:
-                    card.get_heald(amount)
+                    card.get_healed(amount)
             elif targets == 'all':
                 for theplayer in board.players:
                     theplayer.hero.get_healed(amount)
                     for i in theplayer.battlefield['minions']:
-                        i.get_heald(amount)
-            elif targets == 'allfriendly':
-                if self.effect['targets'][11:] == '':
-                    for i in player.battlefield:
                         i.get_healed(amount)
+            elif targets == 'allfriendly':
+                player.hero.get_healed(amount)
+                for i in player.battlefield['minions']:
+                    i.get_healed(amount)
             elif targets == 'allfriendlyminions':
                 for i in player.battlefield['minions']:
                     i.get_healed(amount)
             elif target == 'allfriendlyhero':
-                        player.hero.get_healed(amount)
+                player.hero.get_healed(amount)
             elif targets == 'allenemy':
                 aplayer.hero.get_healed(amount)
                 for i in aplayer.battlefield['minions']:
@@ -211,26 +218,21 @@ class Effect:
             elif targets == 'allenemyhero':
                 aplayer.hero.get_healed(amount)
 
-            elif 'validtargets' in self.effect.keys():
-                if targets == 'any':
+            if targets == 'any':
+                target.get_healed(amount)
+            elif ((targets == 'anyfriendlyminion'
+                   and target in player.battlefield['minions'])):
+                target.get_healed(amount)
+            elif (targets == 'anyfriendly'
+                  and (target is player.hero
+                       or target in player.battlefield['minions'])):
+                target.get_healed(amount)
+
+            elif targets == 'anyenemy':
+                if target is aplayer.hero:
+                    aplayer.hero.get_healed(amount)
+                elif target in aplayer.battlefield['minions']:
                     target.get_healed(amount)
-                if ((targets == 'anyfriendlyminions'
-                     and target in player.battlefield['minions'])):
+            elif targets == 'anyenemyminion':
+                if target in aplayer.battlefield['minions']:
                     target.get_healed(amount)
-                elif (target is player.hero
-                      or target in player.battlefield['minions']):
-                    target.get_healed(amount)
-                else:
-                    raise FriendlyEnemyError('This effect can only work'
-                                             ' on friendly characters.')
-                elif targets == 'anyenemy':
-                    if target is aplayer.hero:
-                        aplayer.hero.get_healed(amount)
-                    elif target in aplayer.battlefield['minions']:
-                        target.get_healed(amount)
-                elif targets == 'anyenemyminion':
-                    if target in aplayer.battlefield['minions']:
-                        target.get_healed(amount)
-                    else:
-                        raise FriendlyEnemyError('This effect can only work'
-                                                 ' on enemy characters.')
