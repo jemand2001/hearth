@@ -5,12 +5,13 @@ import time
 class GameObject:
     # gameobjects = []
 
-    def __init__(self, screen, pathtoimage=''):
+    def __init__(self, screen, pathtoimage='', initpos=(0, 0)):
         self.image = pathtoimage
         # gameobjects.append(self)
         self.screen = screen
         if pathtoimage:
             self.image = pygame.image.load(pathtoimage)
+            self.irect = self.image.get_rect()
         else:
             self.image = None
 
@@ -22,7 +23,6 @@ class GameObject:
             return
 
         if self.image:
-            irect = self.image.get_rect()
             if pos2:
                 pos_center_x = (pos1[0] + pos2[0]) / 2
                 pos_center_y = (pos1[1] + pos2[1]) / 2
@@ -33,14 +33,14 @@ class GameObject:
             else:
                 pos_x, pos_y = pos1
 
-            irect.x = pos_x
-            irect.y = pos_y
-            self.screen.blit(self.image, irect)
+            self.irect.x = pos_x
+            self.irect.y = pos_y
+            self.screen.blit(self.image, self.irect)
 
-        self.screen.blit(self.image, irect)
+        self.screen.blit(self.image, self.irect)
 
         if debug:
-            pygame.draw.rect(self.screen, (255, 0, 0, 255), irect, 1)
+            pygame.draw.rect(self.screen, (255, 0, 0, 255), self.irect, 1)
 
 
 class Text:

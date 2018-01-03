@@ -59,7 +59,7 @@ class Effect:
                     self.effect['targets'] = 'self'
 
             else:
-                self.effect['validtargets'] = 'any'        
+                self.effect['validtargets'] = 'any'
 
     def change_side(self, target):  # like: mind control
         pass
@@ -117,7 +117,8 @@ class Effect:
         else:
             amount = self.effect['amount']
 
-        if 'targets' in self.effect.keys() or 'validtargets' in self.effect.keys():
+        if (('targets' in self.effect.keys() or
+             'validtargets' in self.effect.keys())):
             targets = self.specify_target()
         else:
             targets = None
@@ -130,8 +131,8 @@ class Effect:
              and target is not player.hero
              and target not in player.battlefield['minions'])
             or targets[:8] == 'anyenemy'
-             and target is not aplayer.hero
-             and target not in aplayer.battlefield['minions']):
+            and (target is not aplayer.hero
+                 and target not in aplayer.battlefield['minions'])):
             raise FriendlyEnemyError('This effect can only work'
                                      ' on the other side.')
 

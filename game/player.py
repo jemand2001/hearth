@@ -1,10 +1,7 @@
-from ..card.hero import Hero
-from ..card.deck import Deck, Hand
-from ..game.data import CLASSES
-from ..game.error import ManaError, TimeError
-
-
-c = CLASSES
+from card.hero import Hero
+from card.deck import Deck, Hand
+from .data import CLASSES as c
+from .error import ManaError, TimeError
 
 
 class Player:
