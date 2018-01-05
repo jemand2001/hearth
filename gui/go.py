@@ -7,7 +7,7 @@ class GameObject:
         self.image = pathtoimage
         # gameobjects.append(self)
         self.screen = screen
-        try: # if pathtoimage:
+        try:
             self.image = pygame.image.load(pathtoimage)
             self.irect = self.image.get_rect()
         except pygame.error:
@@ -16,7 +16,7 @@ class GameObject:
 
     def draw(self, color=(0, 0, 0, 255), debug=False):
         if not self.image:
-            
+
             rect = self.screen.get_rect()
             pygame.draw.rect(self.screen, color, rect, 1)
             return
@@ -85,7 +85,7 @@ if __name__ == '__main__':
         print('key_ctrl:', key_ctrl)
         print('key_q:', key_q)
 
-        if key_ctrl == key_q == True:
+        if key_ctrl and key_q:
             import sys
             sys.exit()
         mygo.draw(pos1=(10, 20), debug=True)

@@ -20,7 +20,7 @@ class Player:
             'hero': self.hero,
             'minions': []
         }
-        print self.deck.deck
+        # print self.deck.deck
 
     def play_card(self, index, target='board'):
         if not self.on:
