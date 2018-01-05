@@ -3,25 +3,25 @@ import time
 
 
 class GameObject:
-    # gameobjects = []
-
-    def __init__(self, screen, pathtoimage='', initpos=(0, 0)):
+    def __init__(self, screen, pathtoimage='', initpos=[0, 0]):
         self.image = pathtoimage
         # gameobjects.append(self)
         self.screen = screen
-        if pathtoimage:
+        try: # if pathtoimage:
             self.image = pygame.image.load(pathtoimage)
             self.irect = self.image.get_rect()
-        else:
+        except pygame.error:
             self.image = None
+            self.initpos = initpos
 
-    def draw(self, pos1, pos2=(), color=(0, 0, 0, 255), debug=False):
+    def draw(self, color=(0, 0, 0, 255), debug=False):
         if not self.image:
-            rect = list(pos1)
-            rect.extend(pos2)
+            
+            rect = self.screen.get_rect()
             pygame.draw.rect(self.screen, color, rect, 1)
             return
 
+        """
         if self.image:
             if pos2:
                 pos_center_x = (pos1[0] + pos2[0]) / 2
@@ -35,12 +35,17 @@ class GameObject:
 
             self.irect.x = pos_x
             self.irect.y = pos_y
+#            self.irect.width = 500
             self.screen.blit(self.image, self.irect)
+        """
 
         self.screen.blit(self.image, self.irect)
 
         if debug:
             pygame.draw.rect(self.screen, (255, 0, 0, 255), self.irect, 1)
+
+    def move(self, direction):
+        self.irect.move(direction)
 
 
 class Text:
@@ -68,15 +73,19 @@ if __name__ == '__main__':
         key_q = key_ctrl = esc = False
         for i in pygame.event.get():
             # print('event:', i)
-            if i.type == pygame.K_LCTRL or i.type == pygame.K_RCTRL:
-                key_ctrl = True
-            elif i.type == pygame.K_q:
-                key_q = True
+            if i.type == pygame.KEYDOWN:
+                if i.key in (pygame.K_LCTRL, pygame.K_RCTRL, pygame.KMOD_CTRL):
+                    key_ctrl = True
+                elif i.key == pygame.K_q:
+                    key_q = True
             if i.type == pygame.QUIT or i.type == pygame.K_ESCAPE:
                 import sys
                 sys.exit()
 
-        if key_ctrl and key_q:
+        print('key_ctrl:', key_ctrl)
+        print('key_q:', key_q)
+
+        if key_ctrl == key_q == True:
             import sys
             sys.exit()
         mygo.draw(pos1=(10, 20), debug=True)

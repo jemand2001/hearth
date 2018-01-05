@@ -14,18 +14,19 @@ class Deck:
         \t\t 'dmg': x,
         \t\t 'mana': y,
         \t\t 'effects': [(`trigger1`, 'dostuff'),...]...},...}
+        \t[(`card_name`, {...}),...]
         """
         self.pclass = pclass
         if isinstance(cards, dict):
-            cards = cards
+            mycards = cards
 
         elif (isinstance(cards, list)
               or isinstance(cards, tuple)):
-            cards = {}
+            mycards = {}
             for i in cards:
-                cards[i[0]] = i[1]
+                mycards[i[0]] = i[1]
 
-        self.create_deck(cards)
+        self.create_deck(mycards)
 
     def create_deck(self, cards):
         self.deck = []

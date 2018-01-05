@@ -1,15 +1,12 @@
-# from ..data import CLASSES
-# from .effects import Effect
-
-
 TYPES = ('spell', 'minion', 'hero',)
 
 
 class Card:
     def __init__(self, name, mana, cardtype, cardclass):
         """
-        mana:       cost in mana      (int)
-        cardtype:   type of the card  (int)
+        name:     name of the card (str)
+        mana:     cost in mana     (int)
+        cardtype: type of the card (int)
         """
         # self.board = board
         self.name = name
