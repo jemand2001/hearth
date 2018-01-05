@@ -1,5 +1,5 @@
 import pygame
-from gui.main import BoardGO, CardGO
+from gui.main import BoardGO, CardGO, HeroGO
 from card.hero import Hero
 from card.spell import Spell
 from card.minion import Minion
@@ -21,29 +21,32 @@ class ScreenController:
         self.game_objects = {
             'screen': BoardGO(self.screen, img)
         }
+        cards = 0
         for i in elements:
             if isinstance(i, Hero):
                 initpos = (
                     self.res[0] / 2,
-                    700
+                    750
                 )
-                new_go = CardGO(self.screen, i.name, initpos)
+                new_go = HeroGO(self.screen, i.name, initpos)
                 self.game_objects[i] = new_go
             else:
-                cards = 0
-                for j in self.game_objects.keys():
-                    if not isinstance(i, Hero):
-                        cards += 1
-                init_x = 100 + cards * 100
-                init_y = 800
+                cards += 1
+                init_x = 100 + cards * 200
+                init_y = 850
                 new_go = CardGO(self.screen, i.name, initpos=(init_x, init_y))
                 self.game_objects[i] = new_go
-            # print('Created CardGO:', new_go)
+            print('Created CardGO:', new_go)
+        # print(len(elements))
+        # print(len(self.game_objects.values()))
 
     def draw(self):
-        self.screen.fill(BLACK)
+        self.screen.fill(BLACK) 
+        screen = self.game_objects['screen']
+        screen.draw()
         for i in self.game_objects.values():
-            i.draw()
+            if isinstance(i, (CardGO, HeroGO)):
+                i.draw(debug=self.debug)
         pygame.display.flip()
 
 
@@ -72,10 +75,14 @@ if __name__ == '__main__':
     # print(deck1)
 
     vplayer = Player(0, deck1)
+    special_card = Spell('../test/little_friend', 0, '10_dmg', '*')
+    vplayer.deck.put_card_on_index(special_card, len(vplayer.deck))
     vplayer.start_game()
 
     elements = vplayer.hand[:]
     elements.append(vplayer.hero)
+
+    # print(elements)
 
     sc = ScreenController(elements, debug=True)
 

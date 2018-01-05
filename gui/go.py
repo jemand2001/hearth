@@ -3,16 +3,22 @@ import time
 
 
 class GameObject:
-    def __init__(self, screen, pathtoimage='', initpos=[0, 0]):
-        self.image = pathtoimage
-        # gameobjects.append(self)
+    def __init__(self, screen, pathtoimage='', initpos=[0, 0], centered=True):
+        self.pathtoimage = pathtoimage
+
+        self.initpos = initpos
         self.screen = screen
         try:
             self.image = pygame.image.load(pathtoimage)
             self.irect = self.image.get_rect()
+            if centered:
+                self.irect.x = initpos[0] - (self.irect.width/2)
+                self.irect.y = initpos[1] - (self.irect.height/2)
+            else:
+                self.irect.x, self.irect.y = self.initpos
+
         except pygame.error:
             self.image = None
-            self.initpos = initpos
 
     def draw(self, color=(0, 0, 0, 255), debug=False):
         if not self.image:
@@ -20,24 +26,6 @@ class GameObject:
             rect = self.screen.get_rect()
             pygame.draw.rect(self.screen, color, rect, 1)
             return
-
-        """
-        if self.image:
-            if pos2:
-                pos_center_x = (pos1[0] + pos2[0]) / 2
-                pos_center_y = (pos1[1] + pos2[1]) / 2
-
-                pos_x = pos_center_x - (irect.width / 2)
-                pos_y = pos_center_y - (irect.height / 2)
-
-            else:
-                pos_x, pos_y = pos1
-
-            self.irect.x = pos_x
-            self.irect.y = pos_y
-#            self.irect.width = 500
-            self.screen.blit(self.image, self.irect)
-        """
 
         self.screen.blit(self.image, self.irect)
 
