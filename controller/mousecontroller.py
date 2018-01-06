@@ -15,6 +15,9 @@ class MouseController:
             elif event.type == pygame.MOUSEBUTTONUP:
                 mousepos = pygame.mouse.get_pos()
                 events['mousebuttonup'] = mousepos
+            elif event.type == pygame.MOUSEMOTION:
+                mousepos = pygame.mouse.get_pos()
+                events['mousemotion'] = mousepos
 
         return events
 

@@ -5,10 +5,13 @@ from game.data import IMG_PATH
 
 
 class BoardGO(GameObject):
-    def __init__(self, screen, img):
-        bg_img = img.lower() + '.png'
-        pathtoimage = path.join(IMG_PATH, 'screens', bg_img)
-        GameObject.__init__(self, screen, pathtoimage, centered=False)
+    def __init__(self, screen, img='', color=(0, 0, 0, 0)):
+        if img:
+            bg_img = img.lower() + '.png'
+            pathtoimage = path.join(IMG_PATH, 'screens', bg_img)
+            GameObject.__init__(self, screen, pathtoimage, centered=False)
+        else:
+            GameObject.__init__(self, screen, '', centered=False, color=color)
 
 
 class CardGO(GameObject):

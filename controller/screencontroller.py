@@ -3,13 +3,15 @@ from gui.main import BoardGO, CardGO, HeroGO
 from card.hero import Hero
 from card.spell import Spell
 from card.minion import Minion
+from .mousecontroller import MouseController
 
 
 BLACK = (0, 0, 0, 255)
+GREEN = (0, 255, 0, 255)
 
 
 class ScreenController:
-    def __init__(self, elements, res=(1920, 1014), img='test', debug=False):
+    def __init__(self, elements, res=(1920, 1014), img='', debug=False, color=GREEN):
         """elements: list of Card instances"""
 
         self.debug = debug
@@ -37,11 +39,31 @@ class ScreenController:
                 new_go = CardGO(self.screen, i.name, initpos=(init_x, init_y))
                 self.game_objects[i] = new_go
             print('Created CardGO:', new_go)
+
+        self.mouse_controller = MouseController(self.screen)
+        self.go_on_mouse = None
         # print(len(elements))
         # print(len(self.game_objects.values()))
 
     def draw(self):
-        self.screen.fill(BLACK) 
+        events = self.mouse_controller.get_events()
+        for el in events.keys():
+            if ((el == 'mousebuttondown'
+                 and 'mousebuttonup' not in events.keys())):
+                for go in self.game_objects.values():
+                    if not isinstance(go, BoardGO):
+                        if ((go.irect.left < events[el][0] < go.irect.right
+                             and go.irect.top > events[el][1] > go.irect.bottom)):
+                            self.go_on_mouse = go
+
+            if self.go_on_mouse and el == 'mousemotion':
+                self.go_on_mouse.set_pos(events[el])
+
+            if self.go_on_mouse and el == 'mousebuttonup':
+                self.go_on_mouse.set_goal(self.go_on_mouse.initpos)
+                del self.go_on_mouse
+
+        self.screen.fill(BLACK)
         screen = self.game_objects['screen']
         screen.draw()
         for i in self.game_objects.values():

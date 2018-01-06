@@ -3,7 +3,7 @@ import time
 
 
 class GameObject:
-    def __init__(self, screen, pathtoimage='', initpos=[0, 0], centered=True):
+    def __init__(self, screen, pathtoimage='', initpos=[0, 0], color=(0, 0, 0, 0), centered=True):
         self.pathtoimage = pathtoimage
 
         self.initpos = initpos
@@ -18,10 +18,16 @@ class GameObject:
                 self.irect.x, self.irect.y = self.initpos
 
         except pygame.error:
+            self.color=color
             self.image = None
+
+        self.goal = None
+        self.speed = .2
 
     def draw(self, color=(0, 0, 0, 255), debug=False):
         if not self.image:
+            if self.color != (0, 0, 0, 0):
+                color = self.color
 
             rect = self.screen.get_rect()
             pygame.draw.rect(self.screen, color, rect, 1)
@@ -32,8 +38,34 @@ class GameObject:
         if debug:
             pygame.draw.rect(self.screen, (255, 0, 0, 255), self.irect, 1)
 
+        if self.goal is not None:
+            # move toward there
+            amount = (
+                int((self.irect.x - self.goal[0]) * self.speed),
+                int((self.irect.y - self.goal[1]) * self.speed)
+            )
+            self.move(amount)
+
     def move(self, direction):
         self.irect.move(direction)
+
+    def set_pos(self, pos, center=True):
+        if center:
+            self.irect.center = pos
+        else:
+            self.irect.x, self.irect.y = pos
+
+    def get_pos(self, centered=True):
+        if centered:
+            return self.irect.center
+        else:
+            return self.irect.x, self.irect.y
+
+    def set_goal(self, pos, centered=True):
+        if centered:
+            pos = pos[0] - (self.irect.width/2), pos[1] - (self.irect.height/2)
+
+        self.goal = pos
 
 
 class Text:
