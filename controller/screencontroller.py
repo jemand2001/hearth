@@ -4,6 +4,7 @@ from card.hero import Hero
 from card.spell import Spell
 from card.minion import Minion
 from .mousecontroller import MouseController
+from keyboardcontroller import KeyboardController
 
 
 BLACK = (0, 0, 0, 255)
@@ -42,11 +43,22 @@ class ScreenController:
 
         self.mouse_controller = MouseController(self.screen)
         self.go_on_mouse = None
+
+        self.keyboard_controller = KeyboardController(self.screen)
+
+
+        self.held_keys = []
         # print(len(elements))
         # print(len(self.game_objects.values()))
 
     def draw(self):
-        events = self.mouse_controller.get_events()
+        events = {}
+        events.update(self.mouse_controller.get_events())
+        events.update(self.keyboard_controller.get_events())
+
+        pressed_keys = []
+        released_keys = []
+
         for el in events.keys():
             if ((el == 'mousebuttondown'
                  and 'mousebuttonup' not in events.keys())):
@@ -62,6 +74,21 @@ class ScreenController:
             if self.go_on_mouse and el == 'mousebuttonup':
                 self.go_on_mouse.set_goal(self.go_on_mouse.initpos)
                 del self.go_on_mouse
+
+            if el == 'keydown':
+                for i in el:
+                    if i not in events['keyup']:
+                        self.held_keys.append(i)
+                    else:
+                        pressed_keys.append(i)
+
+            if el == 'keyup':
+                for i in el:
+                    if i in self.held_keys:
+                        released_keys.append(i)
+                        self.held_keys.remove(i)
+                    else:
+                        continue
 
         self.screen.fill(BLACK)
         screen = self.game_objects['screen']

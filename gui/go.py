@@ -89,24 +89,36 @@ if __name__ == '__main__':
     testpath = path.join(IMG_PATH, 'test', 'little_friend2.png')
     mygo = GameObject(s, testpath)
 
+    # print('KEY Q: {}'.format(pygame.K_q))
+    # print('KEY Ctrl: {}'.format(pygame.K_LCTRL))
+
+    key_q = key_ctrl = esc = 0
+
     while 1:
-        key_q = key_ctrl = esc = False
         for i in pygame.event.get():
             # print('event:', i)
             if i.type == pygame.KEYDOWN:
+                # print(i.key)
+                
                 if i.key in (pygame.K_LCTRL, pygame.K_RCTRL, pygame.KMOD_CTRL):
-                    key_ctrl = True
+                    key_ctrl = 50
                 elif i.key == pygame.K_q:
-                    key_q = True
+                    key_q = 50
             if i.type == pygame.QUIT or i.type == pygame.K_ESCAPE:
                 import sys
                 sys.exit()
 
-        print('key_ctrl:', key_ctrl)
-        print('key_q:', key_q)
+        # print('key_ctrl:', key_ctrl)
+        # print('key_q:', key_q)
 
-        if key_ctrl and key_q:
-            import sys
-            sys.exit()
-        mygo.draw(pos1=(10, 20), debug=True)
+        if key_ctrl > 0:
+            if key_q > 0:
+                import sys
+                sys.exit()
+        else:
+            key_ctrl -= 1
+        if key_q > 0:
+            key_q -= 1
+        mygo.set_pos((10, 20), center=False)
+        mygo.draw(debug=True)
         pygame.display.flip()

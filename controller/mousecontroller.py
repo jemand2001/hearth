@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import pygame
+from pygame import *
 
 
 class MouseController:
@@ -8,15 +8,15 @@ class MouseController:
 
     def get_events(self):
         events = {}
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mousepos = pygame.mouse.get_pos()
+        for event in event.get([MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION]):
+            if event.type == MOUSEBUTTONDOWN:
+                mousepos = mouse.get_pos()
                 events['mousebuttondown'] = mousepos
-            elif event.type == pygame.MOUSEBUTTONUP:
-                mousepos = pygame.mouse.get_pos()
+            elif event.type == MOUSEBUTTONUP:
+                mousepos = mouse.get_pos()
                 events['mousebuttonup'] = mousepos
-            elif event.type == pygame.MOUSEMOTION:
-                mousepos = pygame.mouse.get_pos()
+            elif event.type == MOUSEMOTION:
+                mousepos = mouse.get_pos()
                 events['mousemotion'] = mousepos
 
         return events
