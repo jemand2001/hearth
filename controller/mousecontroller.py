@@ -8,25 +8,30 @@ class MouseController:
 
     def get_events(self):
         events = {}
-        for event in event.get([MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION]):
-            if event.type == MOUSEBUTTONDOWN:
+        for i in event.get([MOUSEBUTTONDOWN,
+                            MOUSEBUTTONUP,
+                            MOUSEMOTION,
+                            QUIT]):
+            if i.type == MOUSEBUTTONDOWN:
                 mousepos = mouse.get_pos()
                 events['mousebuttondown'] = mousepos
-            elif event.type == MOUSEBUTTONUP:
+            elif i.type == MOUSEBUTTONUP:
                 mousepos = mouse.get_pos()
                 events['mousebuttonup'] = mousepos
-            elif event.type == MOUSEMOTION:
+            elif i.type == MOUSEMOTION:
                 mousepos = mouse.get_pos()
                 events['mousemotion'] = mousepos
+            elif i.type == QUIT:
+                events['QUIT'] = QUIT
 
         return events
 
 
 if __name__ == '__main__':
-    pygame.init()
-    s = pygame.display.set_mode([1366, 768])
+    init()
+    s = display.set_mode([1366, 768])
     mc = MouseController(s)
     while 1:
-        events = mc.get_events()
-        for i in events.keys():
-            print(i, events[i])
+        myevents = mc.get_events()
+        for j in myevents:
+            print(j, events[j])

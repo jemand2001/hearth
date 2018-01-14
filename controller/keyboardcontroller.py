@@ -1,4 +1,4 @@
-import pygame
+from pygame import *
 
 
 class KeyboardController:
@@ -10,10 +10,12 @@ class KeyboardController:
             'keydown': [],
             'keyup': []
         }
-        for event in event.get([KEYDOWN, KEYUP]):
-            if event.type = KEYDOWN:
-                events['keydown'].append(event.key)
+        for i in event.get([KEYDOWN, KEYUP]):
+            # print(i.type, i.key)
+            if i.type == KEYDOWN:
+                events['keydown'].append(i.key)
             else:
-                events['keyup'].append(event.key)
+                events['keyup'].append(i.key)
 
+        # print(events)
         return events

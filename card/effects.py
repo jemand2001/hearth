@@ -1,5 +1,5 @@
-from game.error import *
-from .card import Card
+from game.error import FriendlyEnemyError
+# from .card import Card
 
 
 class Effect:
@@ -99,10 +99,11 @@ class Effect:
                     target += 'hero'
         return target
 
-    def do_effect(self, card, board, player, target='board'):
+    def do_effect(self, card, player, target='board'):
         """board: Board instance (the only one in the game, i'd hope)
         player: Player that the card this effect is caused by belongs to
         target: the effect's target card"""
+        board = player.board
         # do something according to what self.effect says
         if self.effect == {}:
             return
@@ -130,9 +131,9 @@ class Effect:
         if ((targets[:11] == 'anyfriendly'
              and target is not player.hero
              and target not in player.battlefield['minions'])
-            or targets[:8] == 'anyenemy'
-            and (target is not aplayer.hero
-                 and target not in aplayer.battlefield['minions'])):
+                or targets[:8] == 'anyenemy'
+                and (target is not aplayer.hero
+                     and target not in aplayer.battlefield['minions'])):
             raise FriendlyEnemyError('This effect can only work'
                                      ' on the other side.')
 

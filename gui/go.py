@@ -1,9 +1,16 @@
+"""the module for Game Objects"""
 import pygame
-import time
+# import time
 
 
-class GameObject:
-    def __init__(self, screen, pathtoimage='', initpos=[0, 0], color=(0, 0, 0, 0), centered=True):
+class GameObject(object):
+    """a class to draw images on a pygame surface"""
+    def __init__(self,
+                 screen,
+                 pathtoimage='',
+                 initpos=[0, 0],
+                 color=(0, 0, 0, 0),
+                 centered=True):
         self.pathtoimage = pathtoimage
 
         self.initpos = initpos
@@ -18,13 +25,15 @@ class GameObject:
                 self.irect.x, self.irect.y = self.initpos
 
         except pygame.error:
-            self.color=color
+            self.color = color
             self.image = None
 
         self.goal = None
-        self.speed = .2
+
+    SPEED = .2
 
     def draw(self, color=(0, 0, 0, 255), debug=False):
+        """draw the GameObject with color as border color"""
         if not self.image:
             if self.color != (0, 0, 0, 0):
                 color = self.color
@@ -41,43 +50,53 @@ class GameObject:
         if self.goal is not None:
             # move toward there
             amount = (
-                int((self.irect.x - self.goal[0]) * self.speed),
-                int((self.irect.y - self.goal[1]) * self.speed)
+                int((self.irect.x - self.goal[0]) * self.SPEED),
+                int((self.irect.y - self.goal[1]) * self.SPEED)
             )
             self.move(amount)
 
     def move(self, direction):
-        self.irect.move(direction)
+        """move in direction"""
+        self.irect = self.irect.move(direction)
 
     def set_pos(self, pos, center=True):
+        """set the position of irect to pos"""
         if center:
             self.irect.center = pos
         else:
             self.irect.x, self.irect.y = pos
 
     def get_pos(self, centered=True):
+        """returns irect's position"""
         if centered:
             return self.irect.center
         else:
             return self.irect.x, self.irect.y
 
     def set_goal(self, pos, centered=True):
+        """set a goal position to move towards"""
         if centered:
             pos = pos[0] - (self.irect.width/2), pos[1] - (self.irect.height/2)
 
         self.goal = pos
 
 
-class Text:
-    def __init__(self, screen, font, size):
+class Text(object):
+    """a class to draw text on a pygame surface"""
+    def __init__(self, screen, defvalue, font, size):
         """screen: pygame screen object on which to render
         font: ttf font file"""
         self.screen = screen
         self.font = pygame.font.Font(font, size)
+        self.value = defvalue
 
-    def draw(self, pos, value, color=(0, 0, 0, 255)):
-        surf = self.font.render(value, 1, color)
+    def draw(self, pos, color=(0, 0, 0, 255)):
+        """draw the text in the color"""
+        surf = self.font.render(self.value, 1, color)
         self.screen.blit(surf, pos)
+
+    def set_value(self, value):
+        self.value = value
 
 
 if __name__ == '__main__':
@@ -99,7 +118,7 @@ if __name__ == '__main__':
             # print('event:', i)
             if i.type == pygame.KEYDOWN:
                 # print(i.key)
-                
+
                 if i.key in (pygame.K_LCTRL, pygame.K_RCTRL, pygame.KMOD_CTRL):
                     key_ctrl = 50
                 elif i.key == pygame.K_q:

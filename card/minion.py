@@ -3,7 +3,7 @@ from .effects import Effect
 
 
 class Minion(Card):
-    def __init__(self, name, mana, hp, dmg, cclass, abilities):
+    def __init__(self, name, mana, hp=0, dmg=0, cclass=None, abilities={}):
         """
         mana: cost in mana (int)
         hp:   health points (int)
@@ -18,10 +18,16 @@ class Minion(Card):
                 self.register_prop(i, Effect(abilities[i]))
 
     def attack(self, target):
-        if self.getprop('dmg') == 0:
+        if self.get_prop('dmg') == 0:
             raise ValueError('this minion can\'t attack!')
-        if 'on_attack' in self.properties.keys():
-            print('wah!')
+        if self.exists_prop('on_attack'):
+            # print('wah!')
+            self.get_prop('on_attack').do_effect(
+                self,
+                self.get_prop('player').board,
+                self.get_prop('player'))
+
+        target.get_damaged(self.get_prop('dmg'))
 
     def play(self, board, player, target):
         self.summon(board, player, 'hand')
@@ -55,15 +61,16 @@ class Minion(Card):
 
     def die(self):
         if self.exists_prop('deathrattle'):
-            self.get_prop('deathrattle').do_effect(self,
-                                                   self.board,
-                                                   self.get_prop('player'))
+            self.get_prop('deathrattle').do_effect(
+                self,
+                self.get_prop('player').board,
+                self.get_prop('player'))
 
     def copy(self):
         new_card = Minion(self.name,
                           self.cost,
                           TYPES.index(self.ctype),
                           self.cardclass)
-        for i in self.properties.keys():
+        for i in self.properties:
             new_card.register_prop(i, self.get_prop(i))
         return new_card
