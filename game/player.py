@@ -4,9 +4,6 @@ from .data import CLASSES as c
 from .error import ManaError, TimeError
 
 
-# assert False, c
-
-
 class Player:
     def __init__(self, pclass, deck, events, mana=0):
         """pclass: class of the player (int)
@@ -35,7 +32,7 @@ class Player:
             raise TimeError('Tried to play a card outside own turn!')
         c = self.hand[index]
         if c.cost <= self.actualmana:
-            c.play(self.board, self, target)
+            c.play(self, target)
             self.actualmana -= c.cost
         else:
             raise ManaError('Not enough mana(%i < %i)!' % (c.cost,
