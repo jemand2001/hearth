@@ -1,5 +1,5 @@
-from game.error import *
-from .card import Card
+from game.error import FriendlyEnemyError
+# from .card import Card
 
 
 class Effect:
@@ -61,7 +61,7 @@ class Effect:
                     self.effect['targets'] = 'self'
 
             else:
-                self.effect['validtargets'] = 'any'        
+                self.effect['validtargets'] = 'any'
 
     def change_side(self, target):  # like: mind control
         pass
@@ -104,7 +104,9 @@ class Effect:
     def do_effect(self, card, player, target='board'):
         self.numtriggered += 1
         """player: Player that the card this effect is caused by belongs to
+        player: Player that the card this effect is caused by belongs to
         target: the effect's target card"""
+        board = player.board
         # do something according to what self.effect says
         if self.effect == {}:
             return
@@ -119,7 +121,8 @@ class Effect:
         else:
             amount = self.effect['amount']
 
-        if 'targets' in self.effect.keys() or 'validtargets' in self.effect.keys():
+        if (('targets' in self.effect.keys() or
+             'validtargets' in self.effect.keys())):
             targets = self.specify_target()
         else:
             targets = None
@@ -131,9 +134,9 @@ class Effect:
         if ((targets[:11] == 'anyfriendly'
              and target is not player.hero
              and target not in player.battlefield['minions'])
-            or targets[:8] == 'anyenemy'
-             and target is not aplayer.hero
-             and target not in aplayer.battlefield['minions']):
+                or targets[:8] == 'anyenemy'
+                and (target is not aplayer.hero
+                     and target not in aplayer.battlefield['minions'])):
             raise FriendlyEnemyError('This effect can only work'
                                      ' on the other side.')
 

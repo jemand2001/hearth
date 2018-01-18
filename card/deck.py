@@ -14,59 +14,73 @@ class Deck:
         \t\t 'dmg': x,
         \t\t 'mana': y,
         \t\t 'effects': [(`trigger1`, 'dostuff'),...]...},...}
+        \t[(`card_name`, {...}),...]
         """
         self.pclass = pclass
         mycards = cards
         self.create_deck(mycards)
-        # assert False, self.deck
 
     def create_deck(self, cards):
         self.deck = []
         if isinstance(cards, dict):
-            cards = cards
+            for i in cards.keys():
+                mana = cards[i]['mana']
+                cclass = cards[i]['cclass']
+                if TYPES[cards[i]['type']] == 'spell':
+                    effect = cards[i]['effect']
 
-        elif (isinstance(cards, list)
-              or isinstance(cards, tuple)):
-            cards = {}
+                    new_card = Spell(i, mana, effect, cclass)
+
+                elif TYPES[cards[i]['type']] == 'minion':
+                    hp = cards[i]['hp']
+                    dmg = cards[i]['dmg']
+                    try:
+                        abilities = cards[i]['effects']
+                    except KeyError:
+                        abilities = {}
+
+                        new_card = Minion(i, mana, hp, dmg, cclass, abilities)
+
+                elif TYPES[cards[i]['type']] == 'hero':
+                    hp = cards[i]['hp']
+                    effect = cards[i]['effect']
+
+                    new_card = Hero(i, mana, cclass, hp, effect)
+
+                self.put_card_on_index(new_card, 0)
+
+        else:
             for i in cards:
-                cards[i[0]] = i[1]
+                if isinstance(i, Card):
+                    self.put_card_on_index(i, 0)
+                    continue
+                cname = i[0]
+                cprops = i[1]
 
-        self.create_deck(cards)
+                mana = cprops['mana']
+                cclass = cprops['cclass']
+                if TYPES[cprops['type']] == 'spell':
+                    effect = cprops['effect']
 
-    def create_deck(self, cards):
-        self.deck = []
-        for i in cards.keys():
-            mana = cards[i]['mana']
-            cclass = cards[i]['cclass']
-            if TYPES[cards[i]['type']] == 'spell':
-                effect = cards[i]['effect']
+                    new_card = Spell(cname, mana, effect, cclass)
 
-                new_card = Spell(i, mana, effect, cclass)
+                elif TYPES[cprops['type']] == 'minion':
+                    hp = cprops['hp']
+                    dmg = cprops['dmg']
+                    try:
+                        abilities = cprops['effects']
+                    except KeyError:
+                        abilities = {}
 
-            elif TYPES[cards[i]['type']] == 'minion':
-                hp = cards[i]['hp']
-                dmg = cards[i]['dmg']
-                try:
-                    abilities = cards[i]['effects']
-                except KeyError:
-                    abilities = {}
+                    new_card = Minion(cname, mana, hp, dmg, cclass, abilities)
 
-                new_card = Minion(i, mana, hp, dmg, cclass, abilities)
+                elif TYPES[cprops['type']] == 'hero':
+                    hp = cprops['hp']
+                    effect = cprops['effect']
 
-            elif TYPES[cards[i]['type']] == 'hero':
-                hp = cards[i]['hp']
-                effect = cards[i]['effect']
+                    new_card = Hero(cname, mana, cclass, hp, effect)
 
-                new_card = Hero(i, mana, cclass, hp, effect)
-
-            """
-            new_card.register_prop('in_deck', True)
-            new_card.register_prop('in_hand', False)
-            new_card.register_prop('in_graveyard', False)
-            if not isinstance(new_card, Spell):
-                new_card.register_prop('on_battlefield', False)
-            self.deck.append(new_card)"""
-            self.put_card_on_index(new_card, 0)
+                self.put_card_on_index(new_card, 0)
 
         random.shuffle(self.deck)
 

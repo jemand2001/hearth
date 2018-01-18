@@ -38,5 +38,4 @@ class Minion(HealthCard, AttackCard):
                           self.cost,
                           TYPES.index(self.ctype),
                           self.cardclass)
-
         return self._copy(new_card)
