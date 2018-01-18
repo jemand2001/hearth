@@ -1,15 +1,15 @@
-from .card import Card, TYPES
+from .card import HealthCard, AttackCard, TYPES
 from .effects import Effect
 
 
-class Minion(Card):
-    def __init__(self, name, mana, hp, dmg, cclass, abilities):
+class Minion(HealthCard, AttackCard):
+    def __init__(self, name, mana, hp=0, dmg=0, cclass=None, abilities={}):
         """
         mana: cost in mana (int)
         hp:   health points (int)
         dmg:  damage (int)
         abilities: effects that happen when something happens ((str,str))"""
-        Card.__init__(self, name, mana, TYPES.index('minion'), cclass)
+        HealthCard.__init__(self, name, mana, TYPES.index('minion'), cclass)
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
         self.register_prop('dmg', dmg)
@@ -17,18 +17,13 @@ class Minion(Card):
             for i in abilities.keys():
                 self.register_prop(i, Effect(abilities[i]))
 
-    def attack(self, target):
-        if self.getprop('dmg') == 0:
-            raise ValueError('this minion can\'t attack!')
-        if 'on_attack' in self.properties.keys():
-            print('wah!')
-
-    def play(self, board, player, target):
-        self.summon(board, player, 'hand')
+    def play(self, player, target):
+        self.summon(player, 'hand')
         if self.exists_prop('battlecry'):
-            self.get_prop('battlecry').do_effect(self, board, player, target)
+            self.get_prop('battlecry').do_effect(self, player, target)
 
-    def summon(self, board, player, from_where):
+    def summon(self, player, from_where):
+        board = player.board
         if from_where == 'hand':
             self.change_prop('in_hand', False)
         elif from_where == 'deck':
@@ -38,32 +33,10 @@ class Minion(Card):
         self.register_prop('player', player)
         player.battlefield['minions'].append(self)
 
-    def get_damaged(self, amount):
-        self.change_prop('hp', -amount)
-        if self.exists_prop('on_dmg'):
-            # V This call is incomplete!
-            self.get_prop('on_dmg').do_effect(self,
-                                              self.get_prop('board'),
-                                              self.get_prop('player'))
-        if self.get_prop('hp') <= 0:
-            self.die()
-
-    def get_healed(self, amount):
-        self.change_prop('hp', amount)
-        if self.get_prop('hp') > self.get_prop('tophp'):
-            self.set_prop('hp', self.get_prop('tophp'))
-
-    def die(self):
-        if self.exists_prop('deathrattle'):
-            self.get_prop('deathrattle').do_effect(self,
-                                                   self.board,
-                                                   self.get_prop('player'))
-
     def copy(self):
         new_card = Minion(self.name,
                           self.cost,
                           TYPES.index(self.ctype),
                           self.cardclass)
-        for i in self.properties.keys():
-            new_card.register_prop(i, self.get_prop(i))
-        return new_card
+
+        return self._copy(new_card)

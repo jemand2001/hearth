@@ -7,9 +7,15 @@ from ..game.error import ManaError, TimeError
 c = CLASSES
 
 
+# assert False, c
+
+
 class Player:
-    def __init__(self, pclass, deck, mana=0):
-        """pclass: class of the player (int)"""
+    def __init__(self, pclass, deck, events, mana=0):
+        """pclass: class of the player (int)
+        deck: the deck of the player
+        events: the global EventQueue
+        mana: the amount of mana the player starts with"""
         self.pclass = list(c.keys())[pclass]
         self.hero = c[list(c.keys())[pclass]][0].copy()
         if isinstance(deck, Deck):
@@ -23,6 +29,9 @@ class Player:
             'hero': self.hero,
             'minions': []
         }
+        self.board = None
+        self.eventqueue = events
+        # print self.deck.deck
 
     def play_card(self, index, target='board'):
         if not self.on:
@@ -44,26 +53,31 @@ class Player:
     def begin_turn(self):
         # on_start_of_turn effects
         self.on = True
-        for i in self.collect_by_trigger('on_turn_start'):
-            effect = i.get_prop('on_turn_start')
-            effect.do_effect(i,
-                             self.board,
-                             self)
+        self.do_effect_on_trigger('on_turn_start')
         self.mana = min((self.mana+1, 10))
         self.actualmana = self.mana
-        self.hand.draw()
+        self.hand.draw(1)
 
     def end_turn(self):
         self.on = False
-        for i in self.collect_by_trigger('on_turn_end'):
-            effect = i.get_prop('on_turn_end')
-            effect.do_effect(i,
-                             self.board,
-                             self)
+        self.do_effect_on_trigger('on_turn_end')
 
-    def collect_by_trigger(self, trigger):
+    def collect_by_attribute(self, attribute):
         res = []
         for i in self.battlefield['minions']:
-            if i.exists_prop(trigger):
+            if i.exists_prop(attribute):
                 res.append(i)
         return res
+
+    def do_effect_on_trigger(self, trigger):
+        items = self.collect_by_attribute(trigger)
+        for i in items:
+            effect = i.get_prop(trigger)
+            effect.do_effect(i, self)
+
+    def register_board(self, board):
+        """board: global board instance.
+        NOTE: only use once
+        (in hearthstone.game.board.Board.__init__ or
+        hearthstone.game.game.Game.__init__)!"""
+        self.board = board

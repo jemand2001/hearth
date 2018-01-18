@@ -1,5 +1,5 @@
-from card.hero import Hero
 from os import path
+from card.hero import Hero
 
 
 # CLASSES = ('warrior', 'mage')

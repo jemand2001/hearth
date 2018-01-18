@@ -19,6 +19,8 @@ class Effect:
         else:
             self.parse_effect(effect)
 
+        self.numtriggered = 0
+
     def parse_effect(self, e):
         self.effect = {}
         if e == '':
@@ -99,9 +101,9 @@ class Effect:
                     target += 'hero'
         return target
 
-    def do_effect(self, card, board, player, target='board'):
-        """board: Board instance (the only one in the game, i'd hope)
-        player: Player that the card this effect is caused by belongs to
+    def do_effect(self, card, player, target='board'):
+        self.numtriggered += 1
+        """player: Player that the card this effect is caused by belongs to
         target: the effect's target card"""
         # do something according to what self.effect says
         if self.effect == {}:
@@ -109,7 +111,7 @@ class Effect:
 
         if isinstance(self.effect, list):
             for i in self.effect:
-                i.do_effect(card, board, player, target)
+                i.do_effect(card, player, target)
                 return
 
         if 'amount' in self.effect.keys() and card.ctype == 'spell':

@@ -1,6 +1,7 @@
 import random
-from board import Board
-from player import Player, CLASSES
+from .board import Board
+from .player import Player
+from .events import EventQueue
 
 
 class Game:
@@ -10,6 +11,7 @@ class Game:
         \t\t'name': name,
         \t\t'class': pclass (as in data.CLASSES),
         \t\t'deck': deck (in a format understandable by Deck.__init__)}"""
+        self.events = EventQueue()
         self.players = {}
         self.players[p1['name']] = self.create_player(p1)
         self.players[p2['name']] = self.create_player(p2)
@@ -19,7 +21,8 @@ class Game:
     def create_player(self, player):
         player1 = Player(
             player['class'],
-            player['deck']
+            player['deck'],
+            self.events
         )
         if 'mana' in player.keys():
             player1.mana = player1.actualmana = player['mana']

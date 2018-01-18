@@ -10,9 +10,8 @@ class Spell(Card):
         Card.__init__(self, name, mana, TYPES.index('spell'), cclass)
         self.register_prop('effect', Effect(effect))
 
-    def play(self, board, player, target):
-        # TODO: need to add a register of effects and how they work
-        self.get_prop('effect').do_effect(self, board, player, target)
+    def play(self, player, target):
+        self.get_prop('effect').do_effect(self, player, target)
         self.change_prop('in_hand', False)
         self.change_prop('in_graveyard', True)
 
@@ -21,6 +20,4 @@ class Spell(Card):
                          self.cost,
                          TYPES.index(self.ctype),
                          self.cardclass)
-        for i in self.properties.keys():
-            new_card.register_prop(i, self.get_prop(i))
-        return new_card
+        return self._copy(new_card)

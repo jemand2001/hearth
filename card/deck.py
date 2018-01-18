@@ -1,4 +1,4 @@
-from .card import *
+from .card import Card, TYPES
 from .minion import Minion
 from .spell import Spell
 from .hero import Hero
@@ -6,7 +6,7 @@ import random
 
 
 class Deck:
-    def __init__(self, pclass, cards={}):
+    def __init__(self, pclass, cards=()):
         """
         cards: dict/list of tuples that resembles cards with effects&stuff
         \tformat: {`card_name`:
@@ -16,6 +16,12 @@ class Deck:
         \t\t 'effects': [(`trigger1`, 'dostuff'),...]...},...}
         """
         self.pclass = pclass
+        mycards = cards
+        self.create_deck(mycards)
+        # assert False, self.deck
+
+    def create_deck(self, cards):
+        self.deck = []
         if isinstance(cards, dict):
             cards = cards
 
@@ -64,16 +70,21 @@ class Deck:
 
         random.shuffle(self.deck)
 
-    def draw_card(self):
-        c = self.deck.pop()
-        c.change_prop('in_deck', False)
-        c.change_prop('in_hand', True)
-        return c
+    def draw_cards(self, cnt=1):
+        cards = []
+        while cnt > 0:
+            # assert len(self.deck) > 0, self.deck
+            c = self.deck.pop()
+            c.change_prop('in_deck', False)
+            c.change_prop('in_hand', True)
+            cards.append(c)
+            cnt -= 1
+        return cards
 
     def shuffle_card(self, card):
         """card: Card instance"""
         i = random.randint(0, len(self.deck)+1)
-        put_card_on_index(card, i)
+        self.put_card_on_index(card, i)
 
     def put_card_on_index(self, card, index=0):
         if isinstance(card, Card):
@@ -119,14 +130,16 @@ class Hand:
         """numcards: number of cards to draw\ndeck: deck from which to draw"""
         self.deck = deck
         self.hand = []
-        for i in range(numcards):
-            self.draw()
+        self.draw(numcards)
 
-    def draw(self):
-        self.add_card_to_hand(self.deck.draw_card())
+    def draw(self, cnt):
+        self.add_card_to_hand(self.deck.draw_cards(cnt))
 
-    def add_card_to_hand(self, card):
-        self.hand.append(card)
+    def add_card_to_hand(self, cards):
+        if isinstance(cards, (list, tuple)):
+            self.hand.extend(cards)
+        else:
+            self.hand.append(cards)
 
     def __getitem__(self, index):
         return self.hand[index]

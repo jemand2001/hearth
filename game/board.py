@@ -1,15 +1,11 @@
-from error import FriendlyEnemyError
+from .error import FriendlyEnemyError
 
 
 class Board:
-    def __init__(self, p1, p2):
-        self.players = [p1, p2]
-
-    def get_enemy(self, p):
-        if p is self.players[0]:
-            return self.players[1]
-        else:
-            return self.players[0]
+    def __init__(self, player1, player2):
+        self.players = [player1, player2]
+        player1.register_board(self)
+        player2.register_board(self)
 
     def get_all_players(self):
         return self.players
