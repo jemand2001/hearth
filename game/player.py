@@ -75,3 +75,11 @@ class Player:
         (in hearthstone.game.board.Board.__init__ or
         hearthstone.game.game.Game.__init__)!"""
         self.board = board
+        self.get_enemy = self.board.get_enemy
+
+    def _get_battlefield(self):
+        temp_bf = self.battlefield['minions']
+        temp_bf.append(self.hero)
+        return temp_bf
+
+    battlefield_list = property(_get_battlefield)
