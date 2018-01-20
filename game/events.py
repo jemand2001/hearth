@@ -4,7 +4,9 @@ class EventQueue:
     def __init__(self):
         self.events = []
 
-    def add_event(self, event, eventargs={}):
+    def add_event(self, event, eventargs=None):
+        if eventargs is None:
+            eventargs = {}
         if isinstance(event, str):
             self.events.append(GameEvent(event, eventargs))
         elif isinstance(event, GameEvent):
@@ -19,7 +21,9 @@ class EventQueue:
 
 
 class GameEvent:
-    def __init__(self, etype, args={}):
+    def __init__(self, etype, args=None):
+        if args is None:
+            args = {}
         self.type = etype
         for i in args.keys():
             # this actually works! VVV

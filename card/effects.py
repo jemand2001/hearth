@@ -1,6 +1,6 @@
-from game.error import FriendlyEnemyError, TargetError
 import random
-from .card import TYPES
+from game.error import FriendlyEnemyError, TargetError
+# from .card import TYPES
 from .card import HealthCard
 # from .minion import Minion
 # from .hero import Hero
@@ -23,11 +23,11 @@ class Effect:
                 myeffects.append(new_effect)
             self.effect = myeffects
         else:
-            self.parse_effect(effect)
+            self._parse_effect(effect)
 
         self.numtriggered = 0
 
-    def parse_effect(self, myeffect):
+    def _parse_effect(self, myeffect):
         """parse the myeffect string"""
         self.effect = {}
         if myeffect == '':
@@ -46,6 +46,8 @@ class Effect:
             # x = amount; target defaults to any
             #################
             amount = int(parts[0])
+            if amount == -1:
+                amount = 99999999L
             self.effect['type'] = parts[1]
             self.effect['amount'] = amount
             if len(parts) == 3:
@@ -66,16 +68,32 @@ class Effect:
                 return player.hero
             else:
                 return card
-        if not self.effect.has_key('target_mod'):
-            return target
 
         aplayer = player.get_enemy(player)
 
         the_targets = self.effect['targets']
-        if the_targets == 'all' and not self.effect.has_key('target_mod'):
-            return player.board.battlefield
-        elif the_targets == 'any' and not self.effect.has_key('target_mod'):
-            return target
+        if the_targets == 'all':
+            if not self.effect.has_key('target_mod'):
+                return player.board.battlefield
+            else:
+                target_mod = self.effect['target_mod']
+                if target_mod == ['friendly',]:
+                    return player.battlefield_list
+                elif target_mod == ['enemy',]:
+                    return aplayer.battlefield_list
+
+        elif the_targets == 'any':
+            if not self.effect.has_key('target_mod'):
+                return target
+            else:
+                target_mod = self.effect['target_mod']
+                if target_mod == ['friendly',] and target in player.battlefield_list:
+                    return target
+                elif target_mod == ['enemy',] and target in aplayer.battlefield_list:
+                    return target
+                else:
+                    raise FriendlyEnemyError('this effect can only work'
+                                             ' on the other side!')
 
         if 'minion' in self.effect['target_mod']:
             if the_targets == 'any':
@@ -128,8 +146,8 @@ class Effect:
         else:
             amount = self.effect['amount']
 
-        if amount == -1:
-            amount = 99999999
+        assert amount > 0
+
         # targets = self.effect['targets']
         # targets.extend(self.effect['target_mod'])
         # if 'random' in targets:
@@ -142,9 +160,11 @@ class Effect:
             elif isinstance(target, (tuple, list)):
                 for i in target:
                     i.get_healed(amount)
+            # assert False, 'just healed someone!'
         elif self.effect['type'] == 'dmg':
             if isinstance(target, HealthCard):
                 target.get_damaged(amount)
             elif isinstance(target, (tuple, list)):
                 for i in target:
                     i.get_damaged(amount)
+            # assert False, 'just hurt someone!'

@@ -1,4 +1,5 @@
-import pytest, random
+import pytest
+import random
 
 
 @pytest.fixture(scope='session')
@@ -37,9 +38,11 @@ def hand():
     return Hand
 
 
+"""
 @pytest.fixture(scope='session')
 def error():
     from game.error import *
+"""
 
 
 @pytest.fixture(scope='session')

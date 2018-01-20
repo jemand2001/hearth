@@ -25,7 +25,8 @@ class Card:
             raise KeyError('"%s" is not a valid property' % name)
 
     def change_prop(self, name, amount):
-        if not isinstance(self.get_prop(name), (int, float)):
+#        assert False, amount
+        if not isinstance(self.get_prop(name), (int, float, long)):
             raise TypeError('prop %s can not be added to' % name)
         self.properties[name] += amount
 
@@ -47,7 +48,6 @@ class HealthCard(Card):
         if self.exists_prop('on_dmg'):
             # V This call is incomplete!
             self.get_prop('on_dmg').do_effect(self,
-                                              self.get_prop('board'),
                                               self.get_prop('player'))
         if self.get_prop('hp') <= 0:
             self.die()
@@ -76,7 +76,6 @@ class AttackCard(Card):
             # print('wah!')
             self.get_prop('on_attack').do_effect(
                 self,
-                self.get_prop('player').board,
                 self.get_prop('player'))
 
         target.get_damaged(self.get_prop('dmg'))

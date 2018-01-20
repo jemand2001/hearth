@@ -46,6 +46,7 @@ def game_start_p1(Spell):
     p1.begin_turn()
     p1.play_card(-1, p2.hero)
     p1.end_turn()
+    assert p2.hero.get_prop('hp') == 20
 
 
 def game_start_p2(Spell):
@@ -93,6 +94,7 @@ def round2_p2(Minion):
 def test_round2(minion):
     round2_p1(minion)
     round2_p2(minion)
+    assert p1.hero.get_prop('hp') == p2.hero.get_prop('hp') == 30
 
 
 def test_round3():
@@ -126,8 +128,10 @@ def round4_p2(Spell):
     special_card2 = Spell('other special card',
                           3,
                           '-1_heal_to_all_friendly,1_dmg_to_all_enemy')
+    assert special_card2.get_prop('effect').effect[0].effect['amount'] == 99999999L
     p2.deck.put_card_on_index(special_card2, len(p1.deck))
     p2.begin_turn()
+    assert p2.hand[-1] is special_card2
     p2.play_card(-1)
     p2.end_turn()
     assert p2.hero.get_prop('hp') == p2.hero.get_prop('tophp')

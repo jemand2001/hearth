@@ -1,7 +1,7 @@
 from .error import FriendlyEnemyError
 
 
-class Board:
+class Board(object):
     def __init__(self, player1, player2):
         self.players = [player1, player2]
         player1.register_board(self)

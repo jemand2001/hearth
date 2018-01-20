@@ -1,10 +1,10 @@
-from card.hero import Hero
+# from card.hero import Hero
 from card.deck import Deck, Hand
 from .data import CLASSES as c
 from .error import ManaError, TimeError
 
 
-class Player:
+class Player(object):
     def __init__(self, pclass, deck, events, mana=0):
         """pclass: class of the player (int)
         deck: the deck of the player

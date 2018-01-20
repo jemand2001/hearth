@@ -1,7 +1,7 @@
-import pygame
+# import pygame
 from os import path
-from .go import GameObject
 from game.data import IMG_PATH
+from .go import GameObject
 
 
 class BoardGO(GameObject):

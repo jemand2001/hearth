@@ -8,9 +8,11 @@ class GameObject(object):
     def __init__(self,
                  screen,
                  pathtoimage='',
-                 initpos=[0, 0],
+                 initpos=None,
                  color=(0, 0, 0, 0),
                  centered=True):
+        if initpos is None:
+            initpos = [0, 0]
         self.pathtoimage = pathtoimage
 
         self.initpos = initpos

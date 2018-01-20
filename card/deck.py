@@ -1,8 +1,8 @@
+import random
 from .card import Card, TYPES
 from .minion import Minion
 from .spell import Spell
 from .hero import Hero
-import random
 
 
 class Deck:
@@ -89,8 +89,8 @@ class Deck:
         while cnt > 0:
             # assert len(self.deck) > 0, self.deck
             c = self.deck.pop()
-            c.change_prop('in_deck', False)
-            c.change_prop('in_hand', True)
+            c.set_prop('in_deck', False)
+            c.set_prop('in_hand', True)
             cards.append(c)
             cnt -= 1
         return cards

@@ -3,12 +3,14 @@ from .effects import Effect
 
 
 class Minion(HealthCard, AttackCard):
-    def __init__(self, name, mana, hp=0, dmg=0, cclass=None, abilities={}):
+    def __init__(self, name, mana, hp=0, dmg=0, cclass=None, abilities=None):
         """
         mana: cost in mana (int)
         hp:   health points (int)
         dmg:  damage (int)
         abilities: effects that happen when something happens ((str,str))"""
+        if abilities is None:
+            abilities = {}
         HealthCard.__init__(self, name, mana, TYPES.index('minion'), cclass)
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
@@ -25,10 +27,10 @@ class Minion(HealthCard, AttackCard):
     def summon(self, player, from_where):
         board = player.board
         if from_where == 'hand':
-            self.change_prop('in_hand', False)
+            self.set_prop('in_hand', False)
         elif from_where == 'deck':
-            self.change_prop('in_deck', False)
-        self.change_prop('on_battlefield', True)
+            self.set_prop('in_deck', False)
+        self.set_prop('on_battlefield', True)
         self.register_prop('board', board)
         self.register_prop('player', player)
         player.battlefield['minions'].append(self)
