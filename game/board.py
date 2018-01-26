@@ -21,24 +21,27 @@ class Board(object):
             if i is not player:
                 return i
 
-    def _get_battlefield(self):
+    @property
+    def battlefield(self):
         res = []
         for i in self.players:
             res.extend(i.battlefield_list)
         return tuple(res)
 
-    def _get_minions(self):
+    @property
+    def minions(self):
         res = []
         for i in self.players:
             res.extend(i.battlefield['minions'])
         return tuple(res)
 
-    def _get_heroes(self):
+    @property
+    def heroes(self):
         res = []
         for i in self.players:
             res.append(i.hero)
         return tuple(res)
 
-    battlefield = property(_get_battlefield)
-    minions = property(_get_minions)
-    heroes = property(_get_heroes)
+    # battlefield = property(_get_battlefield)
+    # minions = property(_get_minions)
+    # heroes = property(_get_heroes)

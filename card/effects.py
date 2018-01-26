@@ -68,12 +68,10 @@ class Effect:
                 return player.hero
             else:
                 return card
-
         aplayer = player.get_enemy(player)
-
         the_targets = self.effect['targets']
         if the_targets == 'all':
-            if not self.effect.has_key('target_mod'):
+            if not self.effect.has_key('target_mod') or not self.effect['target_mod']:
                 return player.board.battlefield
             else:
                 target_mod = self.effect['target_mod']
@@ -81,7 +79,6 @@ class Effect:
                     return player.battlefield_list
                 elif target_mod == ['enemy',]:
                     return aplayer.battlefield_list
-
         elif the_targets == 'any':
             if not self.effect.has_key('target_mod'):
                 return target
@@ -94,7 +91,6 @@ class Effect:
                 else:
                     raise FriendlyEnemyError('this effect can only work'
                                              ' on the other side!')
-
         if 'minion' in self.effect['target_mod']:
             if the_targets == 'any':
                 if target.ctype != 'minion':
@@ -112,7 +108,6 @@ class Effect:
                 elif 'enemy' in self.effect['target_mod']:
                     return aplayer.battlefield['minions']
                 return player.board.minions
-
         elif 'hero' in self.effect['target_mod']:
             if the_targets == 'any':
                 if target.ctype != 'hero':

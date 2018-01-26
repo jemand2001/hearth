@@ -4,12 +4,13 @@ from .data import CLASSES as c
 from .error import ManaError, TimeError
 
 
-class Player(object):
+class Player:
     def __init__(self, pclass, deck, events, mana=0):
         """pclass: class of the player (int)
         deck: the deck of the player
         events: the global EventQueue
         mana: the amount of mana the player starts with"""
+        # super(self).__init__()
         self.pclass = list(c.keys())[pclass]
         self.hero = c[list(c.keys())[pclass]][0].copy()
         if isinstance(deck, Deck):
@@ -25,6 +26,7 @@ class Player(object):
         }
         self.board = None
         self.eventqueue = events
+        self.on = False
         # print self.deck.deck
 
     def play_card(self, index, target='board'):
@@ -45,14 +47,18 @@ class Player(object):
             self.hand = Hand(self.deck, 4)
 
     def begin_turn(self):
-        # on_start_of_turn effects
+        if self.on is True:
+            raise TimeError('Turn started during own turn!')
         self.on = True
+        # on_start_of_turn effects
         self.do_effect_on_trigger('on_turn_start')
         self.mana = min((self.mana+1, 10))
         self.actualmana = self.mana
         self.hand.draw(1)
 
     def end_turn(self):
+        if not self.on:
+            raise TimeError('Turn ended outside own turn!')
         self.on = False
         self.do_effect_on_trigger('on_turn_end')
 
@@ -77,9 +83,10 @@ class Player(object):
         self.board = board
         self.get_enemy = self.board.get_enemy
 
-    def _get_battlefield(self):
-        temp_bf = self.battlefield['minions']
+    @property
+    def battlefield_list(self):
+        temp_bf = self.battlefield['minions'][:]
         temp_bf.append(self.hero)
-        return temp_bf
+        return tuple(temp_bf)
 
-    battlefield_list = property(_get_battlefield)
+    # battlefield_list = property(_get_battlefield)

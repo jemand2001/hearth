@@ -56,7 +56,8 @@ def game_start_p2(Spell):
     p2.deck.put_card_on_index(special_card2, len(p2.deck))
     p2.begin_turn()
     p2.play_card(-1, p2.hero)
-    p1.end_turn()
+    p2.end_turn()
+    assert p2.hero.get_prop('hp') == 30
 
 
 def test_game_start(spell):
@@ -89,19 +90,34 @@ def round2_p2(Minion):
     p2.play_card(-1)
     p2.end_turn()
     assert p2.battlefield['minions'][0].get_prop('on_turn_start').numtriggered == 0
+    # assert 
 
 
 def test_round2(minion):
     round2_p1(minion)
     round2_p2(minion)
     assert p1.hero.get_prop('hp') == p2.hero.get_prop('hp') == 30
+    assert not p2.on
+    assert not p1.on
 
 
-def test_round3():
+def test_round3(hero):
     p1.begin_turn()
     p1.end_turn()
     p2.begin_turn()
-    assert p2.battlefield['minions'][0].get_prop('on_turn_start').numtriggered == 1
+    m1 = p2.battlefield['minions'][0]
+    e1 = m1.get_prop('on_turn_start')
+    assert e1.numtriggered == 1
+    targets = e1._select_target(m1, p2, 'myboard')
+    bf = myboard.battlefield
+    # assert len(bf) == len(targets)
+    h = 0
+    for i in range(len(targets)):
+        if isinstance(targets[i], hero):
+            h += 1
+        # assert targets[i] is bf[i]
+    assert h == 2, targets
+
     assert p1.hero.get_prop('hp') == 29
     assert p2.hero.get_prop('hp') == 29
     for i in p1.battlefield['minions']:
@@ -113,6 +129,9 @@ def test_round3():
     assert p2.hero.get_prop('hp') == 30
     for i in p2.battlefield['minions']:
         assert i.get_prop('hp') == 5
+
+    assert not p1.on
+    assert not p2.on
 
 
 def round4_p1(Spell):
