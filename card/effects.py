@@ -2,9 +2,6 @@ import random
 from game.error import FriendlyEnemyError, TargetError
 # from .card import TYPES
 from .card import HealthCard
-# from .minion import Minion
-# from .hero import Hero
-# from .spell import Spell
 
 
 class Effect:
@@ -23,6 +20,7 @@ class Effect:
                 myeffects.append(new_effect)
             self.effect = myeffects
         else:
+            # otherwise, the effect is just parsed, as-is
             self._parse_effect(effect)
 
         self.numtriggered = 0
@@ -63,70 +61,71 @@ class Effect:
         pass
 
     def _select_target(self, card, player, target):
+        mytarget = None
         if self.effect['targets'] == 'self':
             if card.ctype == 'spell':
-                return player.hero
+                mytarget = player.hero
             else:
-                return card
+                mytarget = card
         aplayer = player.get_enemy(player)
         the_targets = self.effect['targets']
         if the_targets == 'all':
             if not self.effect.has_key('target_mod') or not self.effect['target_mod']:
-                return player.board.battlefield
+                mytarget = player.board.battlefield
             else:
                 target_mod = self.effect['target_mod']
                 if target_mod == ['friendly',]:
-                    return player.battlefield_list
+                    mytarget = player.battlefield_list
                 elif target_mod == ['enemy',]:
-                    return aplayer.battlefield_list
+                    mytarget = aplayer.battlefield_list
         elif the_targets == 'any':
             if not self.effect.has_key('target_mod'):
-                return target
+                mytarget = target
             else:
                 target_mod = self.effect['target_mod']
                 if target_mod == ['friendly',] and target in player.battlefield_list:
-                    return target
+                    mytarget = target
                 elif target_mod == ['enemy',] and target in aplayer.battlefield_list:
-                    return target
+                    mytarget = target
                 else:
                     raise FriendlyEnemyError('this effect can only work'
                                              ' on the other side!')
         if 'minion' in self.effect['target_mod']:
             if the_targets == 'any':
                 if target.ctype != 'minion':
-                    raise TargetError()
+                    raise TargetError('wrong type of card')
 
                 if ((('enemy' in self.effect['target_mod']
                       and target in player.battlefield['minions'])
                      or ('friendly' in self.effect['target_mod']
                          and target in aplayer.battlefield['minions']))):
                     raise FriendlyEnemyError('can only be used on the other side')
-                return target
+                mytarget = target
             elif the_targets == 'all':
                 if 'friendly' in self.effect['target_mod']:
-                    return player.battlefield['minions']
+                    mytarget = player.battlefield['minions']
                 elif 'enemy' in self.effect['target_mod']:
-                    return aplayer.battlefield['minions']
-                return player.board.minions
+                    mytarget = aplayer.battlefield['minions']
+                mytarget = player.board.minions
         elif 'hero' in self.effect['target_mod']:
             if the_targets == 'any':
                 if target.ctype != 'hero':
                     raise TargetError('this can only work on hero cards')
                 else:
-                    return target
+                    mytarget = target
             elif the_targets == 'all':
                 if 'friendly' in self.effect['target_mod']:
-                    return player.hero
+                    mytarget = player.hero
                 elif 'enemy' in self.effect['target_mod']:
-                    return aplayer.hero
-                return player.board.heroes
+                    mytarget = aplayer.hero
+                mytarget = player.board.heroes
+        return mytarget
 
     def do_effect(self, card, player, target='board'):
         """player: Player that the card this effect is caused by belongs to
         player: Player that the card this effect is caused by belongs to
         target: the effect's target card"""
         self.numtriggered += 1
-        board = player.board
         # do something according to what self.effect says
         if self.effect == {}:
             return
@@ -135,31 +134,21 @@ class Effect:
             for i in self.effect:
                 i.do_effect(card, player, target)
                 return
-
         if 'amount' in self.effect.keys() and card.ctype == 'spell':
             amount = self.effect['amount'] + player.spellpower
         else:
             amount = self.effect['amount']
-
         assert amount > 0
-
-        # targets = self.effect['targets']
-        # targets.extend(self.effect['target_mod'])
-        # if 'random' in targets:
-
-        target = self._select_target(card, player, target)
-
+        realtarget = self._select_target(card, player, target)
         if self.effect['type'] == 'heal':
-            if isinstance(target, HealthCard):
-                target.get_healed(amount)
-            elif isinstance(target, (tuple, list)):
-                for i in target:
+            if isinstance(realtarget, HealthCard):
+                realtarget.get_healed(amount)
+            elif isinstance(realtarget, (tuple, list)):
+                for i in realtarget:
                     i.get_healed(amount)
-            # assert False, 'just healed someone!'
         elif self.effect['type'] == 'dmg':
-            if isinstance(target, HealthCard):
-                target.get_damaged(amount)
-            elif isinstance(target, (tuple, list)):
-                for i in target:
+            if isinstance(realtarget, HealthCard):
+                realtarget.get_damaged(amount)
+            elif isinstance(realtarget, (tuple, list)):
+                for i in realtarget:
                     i.get_damaged(amount)
-            # assert False, 'just hurt someone!'

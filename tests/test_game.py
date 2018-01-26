@@ -110,14 +110,7 @@ def test_round3(hero):
     assert e1.numtriggered == 1
     targets = e1._select_target(m1, p2, 'myboard')
     bf = myboard.battlefield
-    # assert len(bf) == len(targets)
-    h = 0
-    for i in range(len(targets)):
-        if isinstance(targets[i], hero):
-            h += 1
-        # assert targets[i] is bf[i]
-    assert h == 2, targets
-
+    assert targets == bf
     assert p1.hero.get_prop('hp') == 29
     assert p2.hero.get_prop('hp') == 29
     for i in p1.battlefield['minions']:

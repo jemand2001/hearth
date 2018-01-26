@@ -29,8 +29,8 @@ class ScreenController(object):
             'screen': BoardGO(self.display, img)
         }
         cards = 0
-        for i in elements:
-            if isinstance(i, Hero):
+        for a in elements:
+            if isinstance(a, Hero):
                 initpos = (
                     self.res[0] / 2,
                     750
@@ -89,11 +89,11 @@ class ScreenController(object):
                 del self.go_on_mouse
 
             elif el == 'keydown':
-                for i in events[el]:
-                    if i not in events['keyup']:
-                        self.held_keys[i] = 500
+                for b in events[el]:
+                    if b not in events['keyup']:
+                        self.held_keys[b] = 500
                     else:
-                        pressed_keys.append(i)
+                        pressed_keys.append(b)
 
             elif el == 'keyup':
                 for i in events[el]:

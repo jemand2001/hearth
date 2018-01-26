@@ -1,5 +1,5 @@
-import pytest
 import random
+import pytest
 
 
 @pytest.fixture(scope='session')
@@ -36,13 +36,6 @@ def deck():
 def hand():
     from card.deck import Hand
     return Hand
-
-
-"""
-@pytest.fixture(scope='session')
-def error():
-    from game.error import *
-"""
 
 
 @pytest.fixture(scope='session')
