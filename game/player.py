@@ -88,5 +88,3 @@ class Player:
         temp_bf = self.battlefield['minions'][:]
         temp_bf.append(self.hero)
         return tuple(temp_bf)
-
-    # battlefield_list = property(_get_battlefield)

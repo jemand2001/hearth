@@ -41,7 +41,3 @@ class Board(object):
         for i in self.players:
             res.append(i.hero)
         return tuple(res)
-
-    # battlefield = property(_get_battlefield)
-    # minions = property(_get_minions)
-    # heroes = property(_get_heroes)
