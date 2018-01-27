@@ -85,6 +85,7 @@ class Player:
 
     @property
     def battlefield_list(self):
-        temp_bf = self.battlefield['minions'][:]
-        temp_bf.append(self.hero)
+        res = []
+        res.extend(self.battlefield['minions'])
+        res.append(self.hero)
         return tuple(temp_bf)

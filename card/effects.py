@@ -45,7 +45,7 @@ class Effect:
             #################
             amount = int(parts[0])
             if amount == -1:
-                amount = 99999999L
+                amount = 99999999
             self.effect['type'] = parts[1]
             self.effect['amount'] = amount
             if len(parts) == 3:
@@ -138,7 +138,6 @@ class Effect:
             amount = self.effect['amount'] + player.spellpower
         else:
             amount = self.effect['amount']
-        assert amount > 0
         realtarget = self._select_target(card, player, target)
         if self.effect['type'] == 'heal':
             if isinstance(realtarget, HealthCard):
