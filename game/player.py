@@ -27,6 +27,7 @@ class Player:
         self.board = None
         self.eventqueue = events
         self.on = False
+        self._graveyard = []
         # print self.deck.deck
 
     def play_card(self, index, target='board'):
@@ -37,8 +38,8 @@ class Player:
             c.play(self, target)
             self.actualmana -= c.cost
         else:
-            raise ManaError('Not enough mana(%i < %i)!' % (c.cost,
-                                                           self.actualmana))
+            raise ManaError('Not enough mana (%i < %i)!' % (self.actualmana,
+                                                            c.cost))
 
     def start_game(self, start=True):
         if start:
@@ -83,9 +84,18 @@ class Player:
         self.board = board
         self.get_enemy = self.board.get_enemy
 
+    def kill_minion(self, minion):
+        self.battlefield['minions'].remove(minion)
+        self._graveyard.append(minion)
+        minion.set_prop('on_battlefield', False)
+
     @property
     def battlefield_list(self):
         res = []
         res.extend(self.battlefield['minions'])
         res.append(self.hero)
-        return tuple(temp_bf)
+        return tuple(res)
+
+    @property
+    def graveyard(self):
+        return tuple(_graveyard)

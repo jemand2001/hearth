@@ -146,8 +146,8 @@ class Hand:
         self.hand = []
         self.draw(numcards)
 
-    def draw(self, cnt):
-        self.add_card_to_hand(self.deck.draw_cards(cnt))
+    def draw(self, count=1):
+        self.add_card_to_hand(self.deck.draw_cards(count))
 
     def add_card_to_hand(self, cards):
         if isinstance(cards, (list, tuple)):

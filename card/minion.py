@@ -41,3 +41,11 @@ class Minion(HealthCard, AttackCard):
                           TYPES.index(self.ctype),
                           self.cardclass)
         return self._copy(new_card)
+
+    def die(self):
+        if self.exists_prop('deathrattle'):
+            self.get_prop('deathrattle').do_effect(
+                self,
+                self.get_prop('player').board,
+                self.get_prop('player'))
+        self.get_prop('player').kill_minion(self)

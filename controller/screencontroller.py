@@ -33,16 +33,17 @@ class ScreenController(object):
             if isinstance(a, Hero):
                 initpos = (
                     self.res[0] / 2,
-                    750
+                    600
                 )
                 new_go = HeroGO(self.display, i.name, initpos)
                 self.game_objects[i] = new_go
             else:
                 cards += 1
                 init_x = 100 + cards * 200
-                init_y = 850
-                newgo = CardGO(self.display, i.name, initpos=(init_x, init_y))
-                self.game_objects[i] = newgo
+
+                init_y = 700
+                new_go = CardGO(self.display, a.name, initpos=(init_x, init_y))
+                self.game_objects[a] = new_go
             # print('Created CardGO:', new_go)
 
         self.mouse_controller = MouseController(self.display)
@@ -84,10 +85,11 @@ class ScreenController(object):
 
             elif (self.go_on_mouse and el == 'mousebuttonup'
                   and self.mousebuttondown):
-                self.mousebuttondown = True
-                self.go_on_mouse.set_goal(self.go_on_mouse.initpos)
-                del self.go_on_mouse
 
+                self.mousebuttondown = False
+                self.go_on_mouse.set_goal(self.go_on_mouse.initpos)
+                # del self.go_on_mouse
+                self.go_on_mouse = None
             elif el == 'keydown':
                 for b in events[el]:
                     if b not in events['keyup']:

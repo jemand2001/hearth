@@ -27,3 +27,7 @@ class Hero(HealthCard, AttackCard):
                         TYPES.index(self.ctype),
                         self.cardclass)
         return self._copy(new_card)
+
+    def die(self):
+        raise NotImplementedError('The game should end now. '
+                                  'This is not implemented!')

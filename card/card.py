@@ -22,10 +22,10 @@ class Card:
         if name in self.properties.keys():
             self.properties[name] = value
         else:
-            raise KeyError('"%s" is not a valid property' % name)
+            raise KeyError('"%s" is not an existing property' % name)
 
     def change_prop(self, name, amount):
-#        assert False, amount
+        # assert False, amount
         if not isinstance(self.get_prop(name), (int, float, long)):
             raise TypeError('prop %s can not be added to' % name)
         self.properties[name] += amount
@@ -34,7 +34,7 @@ class Card:
         return self.properties[name]
 
     def exists_prop(self, name):
-        return name in self.properties.keys()
+        return name in self.properties
 
     def _copy(self, new_card):
         for i in self.properties:
@@ -56,13 +56,6 @@ class HealthCard(Card):
         self.change_prop('hp', amount)
         if self.get_prop('hp') > self.get_prop('tophp'):
             self.set_prop('hp', self.get_prop('tophp'))
-
-    def die(self):
-        if self.exists_prop('deathrattle'):
-            self.get_prop('deathrattle').do_effect(
-                self,
-                self.get_prop('player').board,
-                self.get_prop('player'))
 
     def set_hp(self, hp):
         self.set_prop('hp', hp)

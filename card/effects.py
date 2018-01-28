@@ -69,56 +69,58 @@ class Effect:
                 mytarget = card
         aplayer = player.get_enemy(player)
         the_targets = self.effect['targets']
+        if 'target_mod' in self.effect:
+            target_mod = self.effect['target_mod']
+        else:
+            target_mod = []
         if the_targets == 'all':
-            if not self.effect.has_key('target_mod') or not self.effect['target_mod']:
+            if not target_mod:
                 mytarget = player.board.battlefield
-            else:
-                target_mod = self.effect['target_mod']
-                if target_mod == ['friendly',]:
-                    mytarget = player.battlefield_list
-                elif target_mod == ['enemy',]:
-                    mytarget = aplayer.battlefield_list
+            elif target_mod == ['friendly', ]:
+                mytarget = player.battlefield_list
+            elif target_mod == ['enemy', ]:
+                mytarget = aplayer.battlefield_list
         elif the_targets == 'any':
-            if not self.effect.has_key('target_mod'):
+            if not target_mod:
+                mytarget = target
+            elif ((target_mod == ['friendly', ]
+                   and target in player.battlefield_list)):
+                mytarget = target
+            elif ((target_mod == ['enemy', ]
+                   and target in aplayer.battlefield_list)):
                 mytarget = target
             else:
-                target_mod = self.effect['target_mod']
-                if target_mod == ['friendly',] and target in player.battlefield_list:
-                    mytarget = target
-                elif target_mod == ['enemy',] and target in aplayer.battlefield_list:
-                    mytarget = target
-                else:
-                    raise FriendlyEnemyError('this effect can only work'
-                                             ' on the other side!')
-        if 'minion' in self.effect['target_mod']:
+                raise FriendlyEnemyError('this effect can only work'
+                                         ' on the other side!')
+        if 'minion' in target_mod:
             if the_targets == 'any':
                 if target.ctype != 'minion':
-                    raise TargetError('wrong type of card')
-
-                if ((('enemy' in self.effect['target_mod']
+                    raise TargetError('wrong card type')
+                if ((('enemy' in target_mod
                       and target in player.battlefield['minions'])
-                     or ('friendly' in self.effect['target_mod']
+                     or ('friendly' in target_mod
                          and target in aplayer.battlefield['minions']))):
                     raise FriendlyEnemyError('can only be used on the other side')
                 mytarget = target
             elif the_targets == 'all':
-                if 'friendly' in self.effect['target_mod']:
+                if 'friendly' in target_mod:
                     mytarget = player.battlefield['minions']
-                elif 'enemy' in self.effect['target_mod']:
+                elif 'enemy' in target_mod:
                     mytarget = aplayer.battlefield['minions']
                 mytarget = player.board.minions
-        elif 'hero' in self.effect['target_mod']:
+        elif 'hero' in target_mod:
             if the_targets == 'any':
                 if target.ctype != 'hero':
                     raise TargetError('this can only work on hero cards')
                 else:
                     mytarget = target
             elif the_targets == 'all':
-                if 'friendly' in self.effect['target_mod']:
+                if 'friendly' in target_mod:
                     mytarget = player.hero
-                elif 'enemy' in self.effect['target_mod']:
+                elif 'enemy' in target_mod:
                     mytarget = aplayer.hero
-                mytarget = player.board.heroes
+                else:
+                    mytarget = player.board.heroes
         return mytarget
 
     def do_effect(self, card, player, target='board'):

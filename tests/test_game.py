@@ -101,7 +101,7 @@ def test_round2(minion):
     assert not p1.on
 
 
-def test_round3(hero):
+def round3(hero):
     p1.begin_turn()
     p1.end_turn()
     p2.begin_turn()
@@ -123,17 +123,22 @@ def test_round3(hero):
     for i in p2.battlefield['minions']:
         assert i.get_prop('hp') == 5
 
-    assert not p1.on
-    assert not p2.on
+
+def test_round3(hero):
+    round3(hero)
 
 
 def round4_p1(Spell):
     special_card1 = Spell('special card', 0, '29_dmg_to_all_enemy_hero')
+    special_card2 = Spell('another one!', 0, '1_heal_to_all_enemy')
     p1.deck.put_card_on_index(special_card1, len(p1.deck))
+    p1.deck.put_card_on_index(special_card2, len(p1.deck) - 1)
     p1.begin_turn()
     p1.play_card(-1)
+    p1.hand.draw()
+    p1.play_card(-1)
     p1.end_turn()
-    assert p2.hero.get_prop('hp') == 1
+    assert p2.hero.get_prop('hp') == 2
 
 
 def round4_p2(Spell):
