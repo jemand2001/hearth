@@ -1,5 +1,6 @@
 from .card import Card, TYPES
 from .effects import Effect
+from .effects import make_effect
 
 
 class Spell(Card):
@@ -8,7 +9,7 @@ class Spell(Card):
         mana:   cost in mana (int)
         effect: spell effect (str)"""
         Card.__init__(self, name, mana, TYPES.index('spell'), cclass)
-        self.register_prop('effect', Effect(effect))
+        self.register_prop('effect', make_effect(effect))
 
     def play(self, player, target):
         self.get_prop('effect').do_effect(self, player, target)

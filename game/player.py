@@ -85,9 +85,18 @@ class Player:
         self.get_enemy = self.board.get_enemy
 
     def kill_minion(self, minion):
-        self.battlefield['minions'].remove(minion)
+        self.remove_minion(self)
         self._graveyard.append(minion)
         minion.set_prop('on_battlefield', False)
+
+    def add_minion(self, minion):
+        self.battlefield['minions'].append(minion)
+
+    def remove_minion(self, minion):
+        self.battlefield['minions'].remove(minion)
+
+    def owns_minion(self, minion):
+        return minion in self.minions
 
     @property
     def battlefield_list(self):
@@ -97,5 +106,13 @@ class Player:
         return tuple(res)
 
     @property
+    def minions(self):
+        return tuple(self.battlefield['minions'])
+
+    @property
     def graveyard(self):
         return tuple(_graveyard)
+
+    @property
+    def aplayer(self):
+        return self.get_enemy(self)

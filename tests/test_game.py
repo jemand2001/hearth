@@ -158,3 +158,27 @@ def round4_p2(Spell):
 def test_round4(spell):
     round4_p1(spell)
     round4_p2(spell)
+
+
+def round5_p1(Spell):
+    special_card1 = Spell('special card numero 1 bgzhillion',
+                          0,
+                          'changeside')
+    the_minion = p2.minions[0]
+    p1.deck.put_card_on_index(special_card1, len(p1.deck))
+    p1.begin_turn()
+    p1.play_card(-1, the_minion)
+    p1.end_turn()
+    assert p1.minions[-1] is the_minion
+
+
+def round5_p2(Minion):
+    special_card2 = Minion('I\'m BADASS',
+                           5,
+                           {'on_turn_end': 'changeside_of_self',
+                            'on_turn_start': '1_dmg_to_all_enemy,changeside_of_all_enemy'})
+
+
+def test_round5(spell, minion):
+    round5_p1(spell)
+    round5_p2(minion)

@@ -1,5 +1,5 @@
 from .card import HealthCard, AttackCard, TYPES
-from .effects import Effect
+from .effects import make_effect
 
 
 class Minion(HealthCard, AttackCard):
@@ -15,9 +15,8 @@ class Minion(HealthCard, AttackCard):
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
         self.register_prop('dmg', dmg)
-        if abilities != {}:
-            for i in abilities.keys():
-                self.register_prop(i, Effect(abilities[i]))
+        for i in abilities.keys():
+            self.register_prop(i, make_effect(abilities[i]))
 
     def play(self, player, target):
         self.summon(player, 'hand')
@@ -33,7 +32,7 @@ class Minion(HealthCard, AttackCard):
         self.set_prop('on_battlefield', True)
         self.register_prop('board', board)
         self.register_prop('player', player)
-        player.battlefield['minions'].append(self)
+        player.add_minion(self)
 
     def copy(self):
         new_card = Minion(self.name,
@@ -49,3 +48,7 @@ class Minion(HealthCard, AttackCard):
                 self.get_prop('player').board,
                 self.get_prop('player'))
         self.get_prop('player').kill_minion(self)
+
+    @property
+    def player(self):
+        return self.get_prop('player')

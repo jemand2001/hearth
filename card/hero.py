@@ -1,5 +1,5 @@
 from .card import HealthCard, AttackCard, TYPES
-from .effects import Effect
+from .effects import make_effect
 
 
 class Hero(HealthCard, AttackCard):
@@ -8,7 +8,7 @@ class Hero(HealthCard, AttackCard):
         mana:   cost in mana (int)
         effect: spell effect (func, I guess)"""
         HealthCard.__init__(self, name, mana, TYPES.index('hero'), cardclass)
-        self.register_prop('effect', Effect(effect))
+        self.register_prop('effect', make_effect(effect))
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
 
