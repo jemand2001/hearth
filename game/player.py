@@ -28,6 +28,7 @@ class Player:
         self.eventqueue = events
         self.on = False
         self._graveyard = []
+        self.hero.register_player(self)
         # print self.deck.deck
 
     def play_card(self, index, target='board'):

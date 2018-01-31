@@ -1,6 +1,6 @@
 import random
 from game.error import FriendlyEnemyError, TargetError
-# from .card import TYPES
+from utils import str2dict
 from .card import HealthCard
 
 
@@ -10,7 +10,7 @@ def make_effect(effect):
     if 'dmg' in effect or 'heal' in effect:
         the_effect = HealthEffect(effect)
     elif 'changeside' in effect:
-        the_effect = ChangeSide(effect)
+        the_effect = ChangeSideEffect(effect)
     else:
         raise TypeError('This effect doesn\'t exist.')
     return the_effect
@@ -20,12 +20,7 @@ class Effect:
     """the class managing effects"""
     def __init__(self, effect):
         """effect: string describing the effect.
-        e.g. '10_dmg' => deal 10 damage to target"""
-        """
-        if 'dmg' in effect or 'heal' in effect:
-            EffectClass = HealthEffect
-        elif 'change_sides' in effect:
-            EffectClass = ChangeSide
+        e.g. '10_dmg' => deal 10 damage to target
         """
         # if a card executes multiple effects at once
         # they're separated by a comma (',')
@@ -129,7 +124,7 @@ class Effect:
         if self.effect['type'] in ('heal', 'dmg'):
             HealthEffect._do_effect(self, card, player, realtarget)
         elif self.effect['type'] == 'changeside':
-            ChangeSide._do_effect(self, card, player, realtarget)
+            ChangeSideEffect._do_effect(self, card, player, realtarget)
 
 
 class HealthEffect(Effect):
@@ -178,7 +173,7 @@ class HealthEffect(Effect):
                     i.get_damaged(amount)
 
 
-class ChangeSide(Effect):
+class ChangeSideEffect(Effect):
     def _parse_effect(self, parts):
         #################
         # side-changing effect
@@ -208,3 +203,38 @@ class ChangeSide(Effect):
             tplayer = realtarget.player
             tplayer.remove_minion(realtarget)
             tplayer.aplayer.add_minion(realtarget)
+
+
+class SummonEffect(Effect):
+    def _parse_effect(self, parts):
+        #################
+        # summoning effect (single minion)
+        # pattern:
+        # 'summon_<name>_<mana>_<hp>_<dmg>_<class>_<abilities>[_for_(friendly|enemy)]'
+        # types:
+        # str_int_int_int_str_dict
+        #################
+        self.effect['type'] = 'summon'
+        name = parts[1]
+        for i, j, k in parts[2:4]:
+            mana = int(i)
+            hp = int(j)
+            dmg = int(k)
+        cclass = parts[5]
+        abilities = str2dict(parts[6])
+        self.effect['targets'] = 'all'
+        if len(parts) > 7:
+            self.effect['target_mod'] = [parts[-1], 'hero']
+        else:
+            self.effect['target_mod'] = ['friendly', 'hero']
+        self.effect['minion'] = Minion(name=name,
+                                       mana=mana,
+                                       hp=hp,
+                                       dmg=dmg,
+                                       cclass=cclass,
+                                       abilities=abilities)
+
+    def _do_effect(self, card, player, realtarget):
+        """summon the specified minion"""
+        minion = self.effect['minion']
+        minion.summon(realtarget.player, 'effect')

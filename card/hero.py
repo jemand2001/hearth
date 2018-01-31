@@ -15,11 +15,15 @@ class Hero(HealthCard, AttackCard):
     def play(self, board, player, target):
         # do effect...
         self.get_prop('effect').do_effect(self, board, player, target)
-
         player.battlefield['hero'] = self
         player.health = self.get_prop('hp')
         self.change_prop('in_hand', False)
         self.change_prop('in_battlefield', True)
+        self.register_player(player)
+
+    def register_player(self, player):
+        """register the player the hero belongs to."""
+        self.player = player
 
     def copy(self):
         new_card = Hero(self.name,
