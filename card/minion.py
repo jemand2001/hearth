@@ -10,6 +10,8 @@ class Minion(HealthCard, AttackCard):
         dmg:    damage (int)
         cclass: the class the minion belongs to (str)
         abilities: effects that happen when something happens ((str,str))"""
+        if cclass is None:
+            cclass = '*'
         if abilities is None:
             abilities = {}
         HealthCard.__init__(self, name, mana, TYPES.index('minion'), cclass)

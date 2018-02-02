@@ -68,7 +68,7 @@ def test_game_start(spell):
     game_start_p2(spell)
 
 
-def round2_p1(Minion):
+def turn2_p1(Minion):
     special_card1 = Minion('I\'m also special', 0, 5, 5, '*',
                            {'battlecry': '1_dmg_to_self'})
 
@@ -81,7 +81,7 @@ def round2_p1(Minion):
     assert special_card1.get_prop('hp') == 4
 
 
-def round2_p2(Minion):
+def turn2_p2(Minion):
     special_card2 = Minion('Me too', 0, 5, 5, '*',
                            {'on_turn_start': '1_dmg_to_all',
                             'on_turn_end': '1_heal_to_all_friendly'})
@@ -93,15 +93,15 @@ def round2_p2(Minion):
     # assert 
 
 
-def test_round2(minion):
-    round2_p1(minion)
-    round2_p2(minion)
+def test_turn2(minion):
+    turn2_p1(minion)
+    turn2_p2(minion)
     assert p1.hero.get_prop('hp') == p2.hero.get_prop('hp') == 30
     assert not p2.on
     assert not p1.on
 
 
-def round3(hero):
+def turn3(hero):
     p1.begin_turn()
     p1.end_turn()
     p2.begin_turn()
@@ -124,11 +124,11 @@ def round3(hero):
         assert i.get_prop('hp') == 5
 
 
-def test_round3(hero):
-    round3(hero)
+def test_turn3(hero):
+    turn3(hero)
 
 
-def round4_p1(Spell):
+def turn4_p1(Spell):
     special_card1 = Spell('special card', 0, '29_dmg_to_all_enemy_hero')
     special_card2 = Spell('another one!', 0, '1_heal_to_all_enemy')
     p1.deck.put_card_on_index(special_card1, len(p1.deck))
@@ -141,7 +141,7 @@ def round4_p1(Spell):
     assert p2.hero.get_prop('hp') == 2
 
 
-def round4_p2(Spell):
+def turn4_p2(Spell):
     special_card2 = Spell('other special card',
                           3,
                           '-1_heal_to_all_friendly,1_dmg_to_all_enemy')
@@ -155,12 +155,12 @@ def round4_p2(Spell):
     assert p1.hero.get_prop('hp') == 28
 
 
-def test_round4(spell):
-    round4_p1(spell)
-    round4_p2(spell)
+def test_turn4(spell):
+    turn4_p1(spell)
+    turn4_p2(spell)
 
 
-def round5_p1(Spell):
+def turn5_p1(Spell):
     special_card1 = Spell('special card numero 1 bgzhillion',
                           0,
                           'changeside')
@@ -172,13 +172,44 @@ def round5_p1(Spell):
     assert p1.minions[-1] is the_minion
 
 
-def round5_p2(Minion):
+def turn5_p2(Minion):
     special_card2 = Minion('I\'m BADASS',
                            5,
                            {'on_turn_end': 'changeside_of_self',
                             'on_turn_start': '1_dmg_to_all_enemy,changeside_of_all_enemy'})
+    p2.deck.put_card_on_index(special_card2, len(p1.deck))
+    p2.begin_turn()
+    p2.play_card(-1)
+    p2.end_turn()
 
 
-def test_round5(spell, minion):
-    round5_p1(spell)
-    round5_p2(minion)
+def test_turn5(spell, minion):
+    turn5_p1(spell)
+    turn5_p2(minion)
+
+
+def turn6_p1(Spell, Minion):
+    special_card1 = Spell('Summoning Great things!',
+                          5,
+                          effect="summon_Great things_5_100_0_*_{}")
+    greatthing = Minion('Great things', 5, 100, 0)
+    e = special_card1.get_prop('effect')
+    m = e.effect['minion']
+    assert m.properties == greatthing.properties
+    p1.deck.put_card_on_index(special_card1, len(p1.deck))
+    p1.begin_turn()
+    p1.play_card(-1)
+    p1.end_turn()
+    assert p1.minions[-1] is m
+
+
+def turn6_p2(Spell):
+    special_card2 = Spell('Destroy something!',
+                          0,
+                          effect='destroy')
+    
+
+
+def test_turn6(spell, minion):
+    turn6_p1(spell, minion)
+    turn6_p2(spell)

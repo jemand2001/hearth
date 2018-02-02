@@ -1,4 +1,6 @@
 import random
+from importlib import import_module
+from pdb import set_trace
 from game.error import FriendlyEnemyError, TargetError
 from utils import str2dict
 from .card import HealthCard
@@ -11,6 +13,8 @@ def make_effect(effect):
         the_effect = HealthEffect(effect)
     elif 'changeside' in effect:
         the_effect = ChangeSideEffect(effect)
+    elif 'summon' in effect:
+        the_effect = SummonEffect(effect, 'minion')
     else:
         raise TypeError('This effect doesn\'t exist.')
     return the_effect
@@ -18,10 +22,16 @@ def make_effect(effect):
 
 class Effect:
     """the class managing effects"""
-    def __init__(self, effect):
+    def __init__(self, effect, *types):
         """effect: string describing the effect.
         e.g. '10_dmg' => deal 10 damage to target
         """
+        self.ctypes = []
+        for i in types:
+            path = 'card.' + i.lower()
+            ctype = import_module(path, i.capitalize())
+            self.ctypes.append(ctype)
+        # set_trace()
         # if a card executes multiple effects at once
         # they're separated by a comma (',')
         if ',' in effect:
@@ -214,12 +224,14 @@ class SummonEffect(Effect):
         # types:
         # str_int_int_int_str_dict
         #################
+        # assert False, self.ctypes
+        Minion = self.ctypes[0]
         self.effect['type'] = 'summon'
         name = parts[1]
-        for i, j, k in parts[2:4]:
-            mana = int(i)
-            hp = int(j)
-            dmg = int(k)
+        i, j, k = parts[2:5]
+        mana = int(i)
+        hp = int(j)
+        dmg = int(k)
         cclass = parts[5]
         abilities = str2dict(parts[6])
         self.effect['targets'] = 'all'
