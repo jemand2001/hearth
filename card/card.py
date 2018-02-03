@@ -15,6 +15,14 @@ class Card:
         self.cardclass = cardclass
         self.properties = {}
 
+    """
+    def __repr__(self):
+        res = ''
+        res += self.__class__
+        res += '(name: %s, mana: %i)' % (self.name, self.mana)
+        return res
+    """
+
     def register_prop(self, name, value):
         self.properties[name] = value
 

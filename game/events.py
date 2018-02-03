@@ -42,4 +42,4 @@ if __name__ == '__main__':
     eventq.add_event(event=gevent)
     eventq.add_event(event='thingdied')
 
-    print eventq.get()
+    print(eventq.get())

@@ -30,8 +30,8 @@ def create_players(Player, Board):
     p1 = Player(0, d1, the_events)
     p2 = Player(1, d2, the_events)
     myboard = Board(p1, p2)
-    p1.board = myboard
-    p2.board = myboard
+    p1.register_board(myboard)
+    p2.register_board(myboard)
 
 
 def test_create_players(player, board):
@@ -145,7 +145,7 @@ def turn4_p2(Spell):
     special_card2 = Spell('other special card',
                           3,
                           '-1_heal_to_all_friendly,1_dmg_to_all_enemy')
-    assert special_card2.get_prop('effect').effect[0].effect['amount'] == 99999999L
+    assert special_card2.get_prop('effect').effect[0].effect['amount'] == 99999999
     p2.deck.put_card_on_index(special_card2, len(p1.deck))
     p2.begin_turn()
     assert p2.hand[-1] is special_card2
@@ -174,18 +174,22 @@ def turn5_p1(Spell):
 
 def turn5_p2(Minion):
     special_card2 = Minion('I\'m BADASS',
-                           5,
-                           {'on_turn_end': 'changeside_of_self',
-                            'on_turn_start': '1_dmg_to_all_enemy,changeside_of_all_enemy'})
+                           mana=5,
+                           hp=10,
+                           dmg=0,
+                           abilities={'on_turn_end': 'changeside_of_self'})
     p2.deck.put_card_on_index(special_card2, len(p1.deck))
     p2.begin_turn()
     p2.play_card(-1)
     p2.end_turn()
+    assert p1.minions[-1] is special_card2
 
 
 def test_turn5(spell, minion):
     turn5_p1(spell)
     turn5_p2(minion)
+    for i in myboard.minions:
+        assert type(i.get_prop('hp')) == int
 
 
 def turn6_p1(Spell, Minion):
@@ -198,16 +202,25 @@ def turn6_p1(Spell, Minion):
     assert m.properties == greatthing.properties
     p1.deck.put_card_on_index(special_card1, len(p1.deck))
     p1.begin_turn()
+    assert p1.hand[-1] is special_card1
     p1.play_card(-1)
+    bfnames = []
+    for i in myboard.minions:
+        bfnames.append(i.name)
+    assert p1.minions[-1] is m, (bfnames)
     p1.end_turn()
-    assert p1.minions[-1] is m
+    assert p2.minions[-1] is special_card2
 
 
 def turn6_p2(Spell):
     special_card2 = Spell('Destroy something!',
                           0,
                           effect='destroy')
-    
+    p2.deck.put_card_on_index(special_card2, len(p1.deck))
+    p2.begin_turn()
+    p2.play_card(-1)
+    p2.end_turn()
+    assert p1.minions[-1] is special_card2
 
 
 def test_turn6(spell, minion):

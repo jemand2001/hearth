@@ -196,10 +196,10 @@ class ChangeSideEffect(Effect):
         self.effect['type'] = 'changeside'
         self.effect['target_mod'] = []
         if len(parts) == 3:
-            self.effect['targets'] = parts[3]
+            self.effect['targets'] = parts[2]
         elif len(parts) > 3:
-            self.effect['targets'] = parts[3]
-            self.effect['target_mod'] = parts[4:]
+            self.effect['targets'] = parts[2]
+            self.effect['target_mod'] = parts[3:]
         else:
             self.effect['targets'] = 'any'
         self.effect['target_mod'].append('minion')
@@ -208,7 +208,7 @@ class ChangeSideEffect(Effect):
         """change the target's side"""
         if isinstance(realtarget, (tuple, list)):
             for i in realtarget:
-                self._do_effect(card, player, realtarget)
+                self._do_effect(card, player, i)
         else:
             tplayer = realtarget.player
             tplayer.remove_minion(realtarget)
@@ -225,7 +225,7 @@ class SummonEffect(Effect):
         # str_int_int_int_str_dict
         #################
         # assert False, self.ctypes
-        Minion = self.ctypes[0]
+        Minion = self.ctypes[0].Minion
         self.effect['type'] = 'summon'
         name = parts[1]
         i, j, k = parts[2:5]
