@@ -199,11 +199,14 @@ def turn6_p1(Spell, Minion):
     greatthing = Minion('Great things', 5, 100, 0)
     e = special_card1.get_prop('effect')
     m = e.effect['minion']
+    assert m.name == 'Great things'
     assert m.properties == greatthing.properties
     p1.deck.put_card_on_index(special_card1, len(p1.deck))
     p1.begin_turn()
     assert p1.hand[-1] is special_card1
     p1.play_card(-1)
+    assert e.numtriggered == 1
+    assert m.get_prop('on_battlefield')
     bfnames = []
     for i in myboard.minions:
         bfnames.append(i.name)

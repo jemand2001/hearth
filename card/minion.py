@@ -52,9 +52,9 @@ class Minion(HealthCard, AttackCard):
         if self.exists_prop('deathrattle'):
             self.get_prop('deathrattle').do_effect(
                 self,
-                self.get_prop('player').board,
-                self.get_prop('player'))
-        self.get_prop('player').kill_minion(self)
+                self.player.board,
+                self.player)
+        self.player.kill_minion(self)
 
     @property
     def player(self):

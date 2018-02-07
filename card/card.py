@@ -14,14 +14,9 @@ class Card:
         self.ctype = TYPES[cardtype]
         self.cardclass = cardclass
         self.properties = {}
-
-    """
-    def __repr__(self):
-        res = ''
-        res += self.__class__
-        res += '(name: %s, mana: %i)' % (self.name, self.mana)
-        return res
-    """
+        self.register_prop('in_deck', True)
+        self.register_prop('in_hand', False)
+        self.register_prop('in_graveyard', False)
 
     def register_prop(self, name, value):
         self.properties[name] = value
@@ -50,7 +45,13 @@ class Card:
         return new_card
 
 
-class HealthCard(Card):
+class PermanentCard(Card):
+    def __init__(self, name, mana, cardtype, cardclass):
+        Card.__init__(self, name, mana, cardtype, cardclass)
+        self.register_prop('on_battlefield', False)
+
+
+class HealthCard(PermanentCard):
     def get_damaged(self, amount):
         self.change_prop('hp', -amount)
         if self.exists_prop('on_dmg'):
@@ -69,7 +70,7 @@ class HealthCard(Card):
         self.set_prop('hp', hp)
 
 
-class AttackCard(Card):
+class AttackCard(PermanentCard):
     def attack(self, target):
         if self.get_prop('dmg') == 0:
             raise ValueError('this minion can\'t attack!')
