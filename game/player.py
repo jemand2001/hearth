@@ -38,6 +38,8 @@ class Player:
         if c.cost <= self.actualmana:
             c.play(self, target)
             self.actualmana -= c.cost
+            if c.ctype == 'spell':
+                self._graveyard.append(c)
         else:
             raise ManaError('Not enough mana (%i < %i)!' % (self.actualmana,
                                                             c.cost))
@@ -95,6 +97,7 @@ class Player:
 
     def remove_minion(self, minion):
         self.battlefield['minions'].remove(minion)
+        self._graveyard.append(minion)
 
     def owns_minion(self, minion):
         return minion in self.minions
@@ -112,7 +115,7 @@ class Player:
 
     @property
     def graveyard(self):
-        return tuple(_graveyard)
+        return tuple(self._graveyard)
 
     @property
     def aplayer(self):
