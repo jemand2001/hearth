@@ -9,9 +9,8 @@ setup(
     author=u'Björn Brandt',
     packages=find_packages(),
     scripts=['main.py'],
-#     install_requires=['pygame'],
-
     package_data={
         'gui': ['*.png', '*.bmp']
     }
 )
+# install_requires=['pygame'],

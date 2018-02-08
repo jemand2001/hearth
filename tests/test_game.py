@@ -90,8 +90,8 @@ def turn2_p2(Minion):
     p2.begin_turn()
     p2.play_card(-1)
     p2.end_turn()
-    assert p2.battlefield['minions'][0].get_prop('on_turn_start').numtriggered == 0
-    # assert 
+    e = p2.battlefield['minions'][0].get_prop('on_turn_start')
+    assert e.numtriggered == 0
 
 
 def test_turn2(minion):
@@ -146,7 +146,8 @@ def turn4_p2(Spell):
     special_card2 = Spell('other special card',
                           3,
                           '-1_heal_to_all_friendly,1_dmg_to_all_enemy')
-    assert special_card2.get_prop('effect').effect[0].effect['amount'] == 99999999
+    e = special_card2.get_prop('effect').effect[0]
+    assert e.effect['amount'] == 99999999
     p2.deck.put_card_on_index(special_card2, len(p1.deck))
     p2.begin_turn()
     assert p2.hand[-1] is special_card2

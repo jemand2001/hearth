@@ -3,7 +3,14 @@ from .effects import make_effect
 
 
 class Minion(HealthCard, AttackCard):
-    def __init__(self, name, mana, hp=0, dmg=0, cclass=None, abilities=None, source='deck'):
+    def __init__(self,
+                 name,
+                 mana,
+                 hp=0,
+                 dmg=0,
+                 cclass=None,
+                 abilities=None,
+                 source='deck'):
         """
         mana:   cost in mana (int)
         hp:     health points (int)
@@ -14,7 +21,8 @@ class Minion(HealthCard, AttackCard):
             cclass = '*'
         if abilities is None:
             abilities = {}
-        HealthCard.__init__(self, name, mana, TYPES.index('minion'), cclass, source)
+        HealthCard.__init__(self, name, mana,
+                            TYPES.index('minion'), cclass, source)
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
         self.register_prop('dmg', dmg)

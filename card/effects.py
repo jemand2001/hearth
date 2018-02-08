@@ -53,7 +53,7 @@ class Effect:
         self.effect = {}
         parts = myeffect.split('_')
         self._parse_effect(parts)
-        
+
     def _select_target(self, card, player, target):
         mytarget = None
         if self.effect['targets'] == 'self':
@@ -94,7 +94,8 @@ class Effect:
                       and target in player.battlefield['minions'])
                      or ('friendly' in target_mod
                          and target in aplayer.battlefield['minions']))):
-                    raise FriendlyEnemyError('can only be used on the other side')
+                    raise FriendlyEnemyError('can only be used'
+                                             ' on the other side')
                 mytarget = target
             elif the_targets == 'all':
                 if 'friendly' in target_mod:

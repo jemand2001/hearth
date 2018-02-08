@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-from pygame import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION, QUIT, event, mouse
+from pygame import (MOUSEBUTTONDOWN, MOUSEBUTTONUP,
+                    MOUSEMOTION, QUIT, event, mouse)
 
 
 class MouseController:
