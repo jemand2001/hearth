@@ -13,8 +13,8 @@ class Spell(Card):
 
     def play(self, player, target):
         self.get_prop('effect').do_effect(self, player, target)
-        self.change_prop('in_hand', False)
-        self.change_prop('in_graveyard', True)
+        self.set_prop('in_hand', False)
+        self.set_prop('in_graveyard', True)
 
     def copy(self):
         new_card = Spell(self.name,

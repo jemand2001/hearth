@@ -2,7 +2,7 @@ TYPES = ('spell', 'minion', 'hero',)
 
 
 class Card:
-    def __init__(self, name, mana, cardtype, cardclass):
+    def __init__(self, name, mana, cardtype, cardclass, source='deck'):
         """
         name:     name of the card (str)
         mana:     cost in mana     (int)
@@ -14,12 +14,17 @@ class Card:
         self.ctype = TYPES[cardtype]
         self.cardclass = cardclass
         self.properties = {}
-        self.register_prop('in_deck', True)
+        self.register_prop('in_deck', False)
         self.register_prop('in_hand', False)
         self.register_prop('in_graveyard', False)
+        if source == 'deck':
+            self.set_prop('in_deck', True)
+        elif source == 'hand':
+            self.set_prop('in_hand', True)
+        self.register_prop('source', source)
 
-    def register_prop(self, name, value):
-        self.properties[name] = value
+    def register_prop(self, name, default):
+        self.properties[name] = default
 
     def set_prop(self, name, value):
         if name in self.properties.keys():
@@ -46,8 +51,8 @@ class Card:
 
 
 class PermanentCard(Card):
-    def __init__(self, name, mana, cardtype, cardclass):
-        Card.__init__(self, name, mana, cardtype, cardclass)
+    def __init__(self, name, mana, cardtype, cardclass, source='deck'):
+        Card.__init__(self, name, mana, cardtype, cardclass, source)
         self.register_prop('on_battlefield', False)
 
 

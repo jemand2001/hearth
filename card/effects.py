@@ -125,7 +125,6 @@ class Effect:
         # do something according to what self.effect says
         if self.effect == {}:
             return
-
         if isinstance(self.effect, list):
             for i in self.effect:
                 i.do_effect(card, player, target)
@@ -244,9 +243,9 @@ class SummonEffect(Effect):
                                        hp=hp,
                                        dmg=dmg,
                                        cclass=cclass,
-                                       abilities=abilities)
+                                       abilities=abilities,
+                                       source='effect')
 
     def _do_effect(self, card, player, realtarget):
         """summon the specified minion"""
-        minion = self.effect['minion']
-        minion.summon(realtarget.player, 'effect')
+        self.effect['minion'].summon(realtarget.player, 'effect')
