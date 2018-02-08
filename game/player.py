@@ -88,7 +88,7 @@ class Player:
         self.get_enemy = self.board.get_enemy
 
     def kill_minion(self, minion):
-        self.remove_minion(self)
+        self.remove_minion(minion)
         self._graveyard.append(minion)
         minion.set_prop('on_battlefield', False)
         minion.set_prop('in_graveyard', False)
