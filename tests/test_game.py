@@ -175,16 +175,17 @@ def turn5_p1(Spell):
 
 
 def turn5_p2(Minion):
-    special_card2 = Minion('I\'m BADASS',
-                           mana=5,
-                           hp=10,
-                           dmg=0,
-                           abilities={'on_turn_end': 'changeside_of_self'})
-    p2.deck.put_card_on_index(special_card2, len(p1.deck))
+    global badassminion
+    badassminion = Minion('I\'m BADASS',
+                          mana=5,
+                          hp=10,
+                          dmg=0,
+                          abilities={'on_turn_end': 'changeside_of_self'})
+    p2.deck.put_card_on_index(badassminion, len(p1.deck))
     p2.begin_turn()
     p2.play_card(-1)
     p2.end_turn()
-    assert p1.minions[-1] is special_card2
+    assert p1.minions[-1] is badassminion
 
 
 def test_turn5(spell, minion):
@@ -192,6 +193,8 @@ def test_turn5(spell, minion):
     turn5_p2(minion)
     for i in myboard.minions:
         assert type(i.get_prop('hp')) == int
+    # set_trace()
+    badassminion.die()
 
 
 def turn6_p1(Spell, Minion):
@@ -207,7 +210,7 @@ def turn6_p1(Spell, Minion):
     p1.begin_turn()
     assert p1.hand[-1] is special_card1
     p1.play_card(-1)
-    set_trace()
+    # set_trace()
     assert e.numtriggered == 1
     assert m.get_prop('on_battlefield'), m.properties
     bfnames = []
@@ -215,7 +218,7 @@ def turn6_p1(Spell, Minion):
         bfnames.append(i.name)
     assert p1.minions[-1] is m, (bfnames)
     p1.end_turn()
-    assert p2.minions[-1] is special_card2
+    # assert p2.minions[-1] is special_card2
 
 
 def turn6_p2(Spell):

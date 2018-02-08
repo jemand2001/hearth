@@ -91,13 +91,15 @@ class Player:
         self.remove_minion(self)
         self._graveyard.append(minion)
         minion.set_prop('on_battlefield', False)
+        minion.set_prop('in_graveyard', False)
+        self._graveyard.append(minion)
 
     def add_minion(self, minion):
         self.battlefield['minions'].append(minion)
+        minion.register_player(self)
 
     def remove_minion(self, minion):
         self.battlefield['minions'].remove(minion)
-        self._graveyard.append(minion)
 
     def owns_minion(self, minion):
         return minion in self.minions

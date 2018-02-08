@@ -131,10 +131,7 @@ class Effect:
                 i.do_effect(card, player, target)
                 return
         realtarget = self._select_target(card, player, target)
-        if self.effect['type'] in ('heal', 'dmg'):
-            HealthEffect._do_effect(self, card, player, realtarget)
-        elif self.effect['type'] == 'changeside':
-            ChangeSideEffect._do_effect(self, card, player, realtarget)
+        self._do_effect(card, player, realtarget)
 
 
 class HealthEffect(Effect):

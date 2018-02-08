@@ -64,3 +64,7 @@ class Minion(HealthCard, AttackCard):
     @property
     def player(self):
         return self.get_prop('player')
+
+    @player.setter
+    def player(self, value):
+        self.set_prop('player', value)
