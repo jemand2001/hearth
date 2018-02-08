@@ -218,18 +218,17 @@ def turn6_p1(Spell, Minion):
         bfnames.append(i.name)
     assert p1.minions[-1] is m, (bfnames)
     p1.end_turn()
-    # assert p2.minions[-1] is special_card2
 
 
 def turn6_p2(Spell):
     special_card2 = Spell('Destroy something!',
                           0,
                           effect='destroy')
+    to_destroy = p1.minions[0]
     p2.deck.put_card_on_index(special_card2, len(p1.deck))
     p2.begin_turn()
-    p2.play_card(-1)
+    p2.play_card(-1, to_destroy)
     p2.end_turn()
-    assert p1.minions[-1] is special_card2
 
 
 def test_turn6(spell, minion):

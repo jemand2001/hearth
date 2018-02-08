@@ -9,12 +9,16 @@ from .card import HealthCard
 def make_effect(effect):
     if effect == '':
         return
-    if 'dmg' in effect or 'heal' in effect:
+    if ',' in effect:
+        the_effect = Effect(effect)
+    elif 'dmg' in effect or 'heal' in effect:
         the_effect = HealthEffect(effect)
     elif 'changeside' in effect:
         the_effect = ChangeSideEffect(effect)
     elif 'summon' in effect:
         the_effect = SummonEffect(effect, 'minion')
+    elif 'destroy' in effect:
+        the_effect = DestroyEffect(effect)
     else:
         raise TypeError('This effect doesn\'t exist.')
     return the_effect
@@ -33,7 +37,7 @@ class Effect:
             self.ctypes.append(ctype)
         # set_trace()
         # if a card executes multiple effects at once
-        # they're separated by a comma (',')
+        # they are separated by a comma (',')
         if ',' in effect:
             myeffect = effect.split(',')
             myeffects = []
@@ -247,3 +251,27 @@ class SummonEffect(Effect):
     def _do_effect(self, card, player, realtarget):
         """summon the specified minion"""
         self.effect['minion'].summon(realtarget.player, 'effect')
+
+
+class DestroyEffect(Effect):
+    def _parse_effect(self, parts):
+        #################
+        # destroying effect
+        # pattern:
+        # 'destroy[_all|any|random][_friendly|enemy]'
+        #################
+        self.effect['type'] = 'destroy'
+        parts.sort()
+        if parts[0] in ('any', 'all'):
+            self.effect['targets'] = parts.pop(0)
+        elif parts[-1] == 'random':
+            self.effect['targets'] = parts.pop(-1)
+        else:
+            self.effect['targets'] = 'any'
+        self.effect['target_mod'] = []
+        if parts[-1] != 'destroy':
+            self.effect['target_mod'].append(parts[-1])
+
+    def _do_effect(self, card, player, realtarget):
+        """destroy target minion"""
+        realtarget.die()
