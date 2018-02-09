@@ -146,7 +146,7 @@ def turn4_p2(Spell):
     special_card2 = Spell('other special card',
                           3,
                           '-1_heal_to_all_friendly,1_dmg_to_all_enemy')
-    e = special_card2.get_prop('effect').effect[0]
+    e = special_card2.get_prop('effect').effect['effects'][0]
     assert e.effect['amount'] == 99999999
     p2.deck.put_card_on_index(special_card2, len(p1.deck))
     p2.begin_turn()

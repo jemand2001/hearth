@@ -23,3 +23,7 @@ class TargetError(Error):
 
 class TimeError(Error):
     pass
+
+
+class ConditionError(Error):
+    pass

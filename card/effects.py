@@ -1,7 +1,7 @@
 import random
 from importlib import import_module
 from pdb import set_trace
-from game.error import FriendlyEnemyError, TargetError
+from game.error import FriendlyEnemyError, TargetError, ConditionError
 from utils import str2dict
 from .card import HealthCard
 
@@ -9,7 +9,9 @@ from .card import HealthCard
 def make_effect(effect):
     if effect == '':
         return
-    if ',' in effect:
+    if 'if' in effect:
+        the_effect = CondEffect(effect)
+    elif ',' in effect:
         the_effect = Effect(effect)
     elif 'dmg' in effect or 'heal' in effect:
         the_effect = HealthEffect(effect)
@@ -44,7 +46,7 @@ class Effect:
             for i in myeffect:
                 new_effect = make_effect(i)
                 myeffects.append(new_effect)
-            self.effect = myeffects
+            self.effect['effects'] = myeffects
         else:
             # otherwise, the effect is just parsed, as-is
             self.parse_effect(effect)
@@ -130,12 +132,12 @@ class Effect:
         # do something according to what self.effect says
         if self.effect == {}:
             return
-        if isinstance(self.effect, list):
-            for i in self.effect:
+        if 'effects' in self.effect:
+            for i in self.effect['effects']:
                 i.do_effect(card, player, target)
-                return
-        realtarget = self._select_target(card, player, target)
-        self._do_effect(card, player, realtarget)
+        else:
+            realtarget = self._select_target(card, player, target)
+            self._do_effect(card, player, realtarget)
 
 
 class HealthEffect(Effect):
@@ -275,3 +277,24 @@ class DestroyEffect(Effect):
     def _do_effect(self, card, player, realtarget):
         """destroy target minion"""
         realtarget.die()
+
+
+class CondEffect:
+    def __init__.py(self, effect):
+        self.effect = {}
+        condition, effect = effect.split(':')
+        self.parse_condition(condition)
+        self.effect['effect'] = make_effect(effect)
+
+    def parse_condition(self, condition):
+        self.effect['condition'] = []
+
+    def eval_condition(self):
+        if 'condition' not in self.effect:
+            return True
+
+    def do_effect(self, card, player, target='board'):
+        if self.eval_condition():
+            self.effect['effect'].do_effect(card, player, target='board')
+        else:
+            raise ConditionError('The conditions have not been met!')
