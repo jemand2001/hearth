@@ -40,6 +40,7 @@ class Effect:
         # set_trace()
         # if a card executes multiple effects at once
         # they are separated by a comma (',')
+        self.effect = {}
         if ',' in effect:
             myeffect = effect.split(',')
             myeffects = []
@@ -56,7 +57,6 @@ class Effect:
         """parse the myeffect string"""
         if myeffect == '':
             return
-        self.effect = {}
         parts = myeffect.split('_')
         self._parse_effect(parts)
 
@@ -280,7 +280,7 @@ class DestroyEffect(Effect):
 
 
 class CondEffect:
-    def __init__.py(self, effect):
+    def __init__(self, effect):
         self.effect = {}
         condition, effect = effect.split(':')
         self.parse_condition(condition)
