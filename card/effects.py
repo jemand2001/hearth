@@ -9,10 +9,12 @@ from .card import HealthCard
 def make_effect(effect):
     if effect == '':
         return
-    if 'if' in effect:
+    if ',' in effect:
+        # if a card executes multiple effects at once
+        # they are separated by a comma (',')
+        the_effect = MultiEffect(effect)
+    elif 'if' in effect:
         the_effect = CondEffect(effect)
-    elif ',' in effect:
-        the_effect = Effect(effect)
     elif 'dmg' in effect or 'heal' in effect:
         the_effect = HealthEffect(effect)
     elif 'changeside' in effect:
@@ -37,20 +39,8 @@ class Effect:
             path = 'card.' + i.lower()
             ctype = import_module(path, i.capitalize())
             self.ctypes.append(ctype)
-        # set_trace()
-        # if a card executes multiple effects at once
-        # they are separated by a comma (',')
         self.effect = {}
-        if ',' in effect:
-            myeffect = effect.split(',')
-            myeffects = []
-            for i in myeffect:
-                new_effect = make_effect(i)
-                myeffects.append(new_effect)
-            self.effect['effects'] = myeffects
-        else:
-            # otherwise, the effect is just parsed, as-is
-            self.parse_effect(effect)
+        self.parse_effect(effect)
         self.numtriggered = 0
 
     def parse_effect(self, myeffect):
@@ -277,6 +267,23 @@ class DestroyEffect(Effect):
     def _do_effect(self, card, player, realtarget):
         """destroy target minion"""
         realtarget.die()
+
+
+class MultiEffect:
+    def __init__(self, effect):
+        self.effect = {}
+        myeffect = effect.split(',')
+        myeffects = []
+        for i in myeffect:
+            new_effect = make_effect(i)
+            myeffects.append(new_effect)
+        self.effect['effects'] = myeffects
+        self.numtriggered = 0
+
+    def do_effect(self, card, player, target='board'):
+        self.numtriggered += 1
+        for i in self.effect['effects']:
+            i.do_effect(card, player, target)
 
 
 class CondEffect:
