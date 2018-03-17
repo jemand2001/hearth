@@ -10,6 +10,7 @@ def create_decks(Deck, deck1, deck2):
     global d1, d2
     d1 = Deck(0, deck1)
     d2 = Deck(1, deck2)
+    print('Deck 1: %s\nDeck 2: %s' % (str(d1), str(d2)))
 
 
 def test_create_decks(deck, the_deck1, the_deck2):
@@ -33,6 +34,7 @@ def create_players(Player, Board):
     myboard = Board(p1, p2)
     p1.register_board(myboard)
     p2.register_board(myboard)
+    print('Player 1: %s\nPlayer 2: %s\nBoard %s' % (p1, p2, myboard))
 
 
 def test_create_players(player, board):
@@ -143,15 +145,19 @@ def turn4_p1(Spell):
 
 
 def turn4_p2(Spell):
+    #print('turn4_p2')
+    #set_trace()
     special_card2 = Spell('other special card',
                           3,
                           '-1_heal_to_all_friendly,1_dmg_to_all_enemy')
     e = special_card2.get_prop('effect').effect['effects'][0]
     assert e.effect['amount'] == 99999999
+    #set_trace()
     p2.deck.put_card_on_index(special_card2, len(p1.deck))
     p2.begin_turn()
     assert p2.hand[-1] is special_card2
     p2.play_card(-1)
+    #set_trace()
     p2.end_turn()
     assert p2.hero.get_prop('hp') == p2.hero.get_prop('tophp')
     assert p1.hero.get_prop('hp') == 28

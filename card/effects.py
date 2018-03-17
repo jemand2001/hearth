@@ -10,8 +10,6 @@ def make_effect(effect):
     if effect == '':
         return
     if ',' in effect:
-        # if a card executes multiple effects at once
-        # they are separated by a comma (',')
         the_effect = MultiEffect(effect)
     elif 'if' in effect:
         the_effect = CondEffect(effect)
@@ -29,7 +27,7 @@ def make_effect(effect):
 
 
 class Effect:
-    """the class managing effects"""
+    """the parent class for all effects"""
     def __init__(self, effect, *types):
         """effect: string describing the effect.
         e.g. '10_dmg' => deal 10 damage to target
@@ -158,6 +156,7 @@ class HealthEffect(Effect):
             self.effect['targets'] = 'any'
 
     def _do_effect(self, card, player, realtarget):
+        print('HealthEffect triggered', self.effect)
         if 'amount' in self.effect.keys() and card.ctype == 'spell':
             amount = self.effect['amount'] + player.spellpower
         else:
@@ -199,6 +198,7 @@ class ChangeSideEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """change the target's side"""
+        print('ChangeSideEffect triggered', self.effect)
         if isinstance(realtarget, (tuple, list)):
             for i in realtarget:
                 self._do_effect(card, player, i)
@@ -242,6 +242,7 @@ class SummonEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """summon the specified minion"""
+        print('SummonEffect triggered', self.effect)
         self.effect['minion'].summon(realtarget.player, 'effect')
 
 
@@ -266,11 +267,21 @@ class DestroyEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """destroy target minion"""
+        print('DestroyEffect triggered', self.effect)
         realtarget.die()
 
 
+############
+#
+# Special forms of effects that are detatched from the actual effects
+#
+############
+
+
 class MultiEffect:
+    """in case you want to execute multiple effects at once"""
     def __init__(self, effect):
+        """multiple effects are separated by a comma (',')"""
         self.effect = {}
         myeffect = effect.split(',')
         myeffects = []
@@ -281,12 +292,15 @@ class MultiEffect:
         self.numtriggered = 0
 
     def do_effect(self, card, player, target='board'):
+        print('MultiEffect triggered!' + str(self.effect) + '\n{{{')
         self.numtriggered += 1
         for i in self.effect['effects']:
             i.do_effect(card, player, target)
+        print('}}}')
 
 
 class CondEffect:
+    """in case you want to only execute an effect on a condition"""
     def __init__(self, effect):
         self.effect = {}
         condition, effect = effect.split(':')
@@ -301,7 +315,10 @@ class CondEffect:
             return True
 
     def do_effect(self, card, player, target='board'):
+        print('CondEffect triggered --')
         if self.eval_condition():
+            print('successfully', self.effect)
             self.effect['effect'].do_effect(card, player, target='board')
         else:
+            print('unsuccessfully', self.effect)
             raise ConditionError('The conditions have not been met!')

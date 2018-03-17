@@ -37,6 +37,7 @@ class Card:
         if not isinstance(self.get_prop(name), (int, float, long)):
             raise TypeError('prop %s can not be added to' % name)
         self.properties[name] += amount
+        print('Changing property \"%s\" of %s (new value: %s)' % (name, str(self), self.get_prop(name)))
 
     def get_prop(self, name):
         return self.properties[name]
@@ -58,6 +59,7 @@ class PermanentCard(Card):
 
 class HealthCard(PermanentCard):
     def get_damaged(self, amount):
+        print('damaging %s by %d' % (str(self), amount))
         self.change_prop('hp', -amount)
         if self.exists_prop('on_dmg'):
             # V This call is incomplete!
@@ -67,6 +69,7 @@ class HealthCard(PermanentCard):
             self.die()
 
     def get_healed(self, amount):
+        print('healing %s by %d' % (str(self), amount))
         self.change_prop('hp', amount)
         if self.get_prop('hp') > self.get_prop('tophp'):
             self.set_prop('hp', self.get_prop('tophp'))
