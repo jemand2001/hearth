@@ -13,8 +13,14 @@ class Game:
         \t\t'deck': deck (in a format understandable by Deck.__init__)}"""
         self.events = EventQueue()
         self.players = {}
-        self.players[p1['name']] = self.create_player(p1)
-        self.players[p2['name']] = self.create_player(p2)
+        if not isinstance(p1, Player):
+            self.players[p1['name']] = self.create_player(p1)
+        else:
+            self.players[p1.name] = p1
+        if not isinstance(p2, Player):
+            self.players[p2['name']] = self.create_player(p2)
+        else:
+            self.players[p2.name] = p2
         if board is None:
             self.board = Board(self.players[p1['name']],
                                self.players[p2['name']])

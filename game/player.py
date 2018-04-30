@@ -5,7 +5,7 @@ from .error import ManaError, TimeError
 
 
 class Player:
-    def __init__(self, pclass, deck, events, mana=0):
+    def __init__(self, pclass, deck, events, mana=0, name=''):
         """pclass: class of the player (int)
         deck: the deck of the player
         events: the global EventQueue
@@ -29,6 +29,7 @@ class Player:
         self.on = False
         self._graveyard = []
         self._hero.register_player(self)
+        self.name = name
         # print self.deck.deck
 
     def play_card(self, index, target='board'):

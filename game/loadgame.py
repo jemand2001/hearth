@@ -2,17 +2,28 @@ from .game import Game
 from .events import *
 from .board import *
 from .default_deck import make_def_deck
+from .data import CLASSES
+from .player import Player
 from card.deck import *
+from random import randint
 
 
-def make_game(**contents):
+def make_game(contents=None):
     """contents: initial parameters of the game (dict)
     including game board state, hands, ... (any number of these)
-    returns {
+    format:
+    {
+    'player1': {'minions': [...], 'pclass': n,
+    \t'deck': [...], 'hero': {attributes}},
+    ...
+    }
+    returns: {
     'game': <Game instance>
     'players': [<Player player1>, <Player player2>]
     'queue': <EventQueue instance>
     }"""
+    if contents is None:
+        contents = {}
     if 'eventqueue' in contents:
         event_q = contents['eventqueue']
     else:
@@ -44,10 +55,13 @@ def make_game(**contents):
     }
 
 
-def create_player(pclass, deck, eventqueue, hand=None):
-    """creates a Player instance of that class, with that deck.""" 
-    my_deck = create_deck(deck, pclass)
-    p = Player(pclass, my_dack, eventqueue)
+def create_player(pclass, deck, eventqueue, hand=None, hero=None):
+    """creates a Player instance of that class, with that deck."""
+    if hero is None:
+        hero = CLASSES[CLASSES.keys()[pclass]]
+    else:
+        hero = make_hero(pclass, hero['name'], hero['maxhp'], hero['hp'])
+    p = Player(pclass, deck, eventqueue)
     if hand is not None:
         p.hand.hand = hand
     return p
@@ -57,7 +71,13 @@ def create_board(player1, player2, player1_side=None, player2_side=None):
     """creates a Board instance for these players"""
     b = Board(player1, player2)
     if player1_side is not None:
-        player1.minions = player1_side[]
+        player1.minions = player1_side
     if player2_side is not None:
-        player2.minions = player2_side[]
+        player2.minions = player2_side
     return b
+
+
+def make_hero(pclass, name, maxhp, hp=None):
+    h = Hero(name=name, hp=maxhp)
+    if hp is not None:
+        h.setprop('hp', hp)

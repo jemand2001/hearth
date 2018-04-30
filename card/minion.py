@@ -6,7 +6,7 @@ class Minion(HealthCard, AttackCard):
     def __init__(self,
                  name,
                  mana,
-                 hp=0,
+                 hp=1,
                  dmg=0,
                  cclass=None,
                  abilities=None,
