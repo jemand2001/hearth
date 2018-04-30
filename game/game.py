@@ -5,7 +5,7 @@ from .events import EventQueue
 
 
 class Game:
-    def __init__(self, p1, p2):
+    def __init__(self, p1, p2, board=None):
         """p1, p2: dict
         \tformat: {
         \t\t'name': name,
@@ -15,10 +15,15 @@ class Game:
         self.players = {}
         self.players[p1['name']] = self.create_player(p1)
         self.players[p2['name']] = self.create_player(p2)
-        self.board = Board(self.players[p1['name']],
-                           self.players[p2['name']])
+        if board is None:
+            self.board = Board(self.players[p1['name']],
+                               self.players[p2['name']])
+        else:
+            self.board = board
 
     def create_player(self, player):
+        if isinstance(player, Player):
+            return player
         player1 = Player(
             player['class'],
             player['deck'],
@@ -33,7 +38,6 @@ class Game:
         # now i need some mechanic to get all the actions & stuff
         # i'll work on gui system now
         self.startplayer.end_turn()
-
         self.otherplayer.start_turn()
         self.otherplayer.end_turn()
 

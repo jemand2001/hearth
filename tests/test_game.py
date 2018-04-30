@@ -20,7 +20,7 @@ def test_create_decks(deck, the_deck1, the_deck2):
 
 def create_event_queue(EventQueue):
     global the_events
-    the_events = EventQueue
+    the_events = EventQueue()
 
 
 def test_event_queue(eventqueue):
@@ -32,8 +32,6 @@ def create_players(Player, Board):
     p1 = Player(0, d1, the_events)
     p2 = Player(1, d2, the_events)
     myboard = Board(p1, p2)
-    p1.register_board(myboard)
-    p2.register_board(myboard)
     print('Player 1: %s\nPlayer 2: %s\nBoard %s' % (p1, p2, myboard))
 
 

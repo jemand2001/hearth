@@ -12,7 +12,7 @@ class Player:
         mana: the amount of mana the player starts with"""
         # super(self).__init__()
         self.pclass = list(c.keys())[pclass]
-        self.hero = c[list(c.keys())[pclass]][0].copy()
+        self._hero = c[list(c.keys())[pclass]][0].copy()
         if isinstance(deck, Deck):
             self.deck = deck
         else:
@@ -21,14 +21,14 @@ class Player:
         self.spellpower = 0
 
         self.battlefield = {
-            'hero': self.hero,
+            'hero': self._hero,
             'minions': []
         }
         self.board = None
         self.eventqueue = events
         self.on = False
         self._graveyard = []
-        self.hero.register_player(self)
+        self._hero.register_player(self)
         # print self.deck.deck
 
     def play_card(self, index, target='board'):
@@ -115,9 +115,26 @@ class Player:
     def minions(self):
         return tuple(self.battlefield['minions'])
 
+    @minions.setter
+    def minions(self, value):
+        self.battlefield['minions'] = value
+
     @property
     def graveyard(self):
         return tuple(self._graveyard)
+
+    @graveyard.setter
+    def graveyard(self, value):
+        self._graveyard = value
+
+    @property
+    def hero(self):
+        return self._hero
+
+    @hero.setter
+    def hero(self, value):
+        """this should (almost) never happen!"""
+        self._hero = hero
 
     @property
     def aplayer(self):

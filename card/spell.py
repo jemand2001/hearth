@@ -1,5 +1,4 @@
 from .card import Card, TYPES
-from .effects import Effect
 from .effects import make_effect
 
 

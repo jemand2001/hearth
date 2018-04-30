@@ -115,6 +115,9 @@ class Deck:
                     h.append(i)
             return random.choice(h)
 
+    def copy(self):
+        return Deck(self.pclass, self.deck)
+
     def __len__(self):
         return len(self.deck)
 

@@ -37,7 +37,8 @@ class Card:
         if not isinstance(self.get_prop(name), (int, float, long)):
             raise TypeError('prop %s can not be added to' % name)
         self.properties[name] += amount
-        print('Changing property \"%s\" of %s (new value: %s)' % (name, str(self), self.get_prop(name)))
+        print('Changing property \"%s\" of %s (new value: %s)'
+              % (name, str(self), self.get_prop(name)))
 
     def get_prop(self, name):
         return self.properties[name]
