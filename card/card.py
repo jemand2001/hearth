@@ -2,6 +2,7 @@ TYPES = ('spell', 'minion', 'hero',)
 
 
 class Card:
+    """Base Card Class. All Card type classes must be derived from this."""
     def __init__(self, name, mana, cardtype, cardclass, source='deck'):
         """
         name:     name of the card (str)
