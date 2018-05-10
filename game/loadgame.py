@@ -51,7 +51,8 @@ def make_game(contents=None):
     return {
         'game': game,
         'players': [player1, player2],
-        'queue': event_q
+        'queue': event_q,
+        'board': board
     }
 
 
@@ -71,9 +72,21 @@ def create_board(player1, player2, player1_side=None, player2_side=None):
     """creates a Board instance for these players"""
     b = Board(player1, player2)
     if player1_side is not None:
-        player1.minions = player1_side
+        the_side = []
+        for i in player1_side:
+            if isinstance(i, Minion):
+                the_side.append(i)
+            elif isinstance(i, dict):
+                the_side.append(make_minion_dict(i))
+        player1.minions = the_side
     if player2_side is not None:
-        player2.minions = player2_side
+        the_side = []
+        for i in player2_side:
+            if isinstance(i, Minion):
+                the_side.append(i)
+            elif isinstance(i, dict):
+                the_side.append(make_minion_dict(i))
+        player2.minions = the_side
     return b
 
 
@@ -81,3 +94,45 @@ def make_hero(pclass, name, maxhp, hp=None):
     h = Hero(name=name, hp=maxhp)
     if hp is not None:
         h.setprop('hp', hp)
+
+
+def make_spell(cclass, name, mana, hp, effect):
+    return Spell(name, mana, effect, cclass)
+
+
+def make_minion(name,
+                mana,
+                maxhp=1,
+                hp=None,
+                dmg=0,
+                cclass=None,
+                abilities=None,
+                source='deck'):
+    new_minion = Minion(name,
+                        mana,
+                        maxhp,
+                        cclass,
+                        abilities,
+                        source)
+    if hp is not None:
+        new_minion.setprop('hp', hp)
+    return new_minion
+
+
+def make_minion_dict(attributes):
+    name = attributes['name']
+    mana = attributes['mana']
+    maxhp = attributes['maxhp']
+    cclass = attributes['cclass'] or '*'
+    hp = attributes['hp'] or maxhp
+    dmg = attributes['dmg']
+    abilities = attributes['abilities'] or ''
+    source = attributes['source'] or 'limbo'
+    return make_minion(name,
+                       mana,
+                       maxhp,
+                       hp,
+                       dmg,
+                       cclass,
+                       abilities,
+                       source)
