@@ -4,12 +4,13 @@ from game.player import Player
 from game.events import *
 from card.deck import *
 from game.board import *
+import pytest
 
 
 def test_load_game_1():
     the_game = make_game()
     assert isinstance(the_game['game'], Game)
-    assert isinstance(the_game['players'], list)
+    assert isinstance(the_game['players'], tuple)
     assert isinstance(the_game['players'][0], Player)
     assert isinstance(the_game['players'][1], Player)
     assert isinstance(the_game['queue'], EventQueue)

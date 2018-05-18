@@ -46,11 +46,12 @@ def make_game(contents=None):
         deck = make_def_deck(pclass)
         player2 = create_player(pclass, deck, event_q)
         player2_side = None
+    assert False, (p2)
     board = create_board(player1, player2, player1_side, player2_side)
     game = Game(player1, player2, board)
     return {
         'game': game,
-        'players': [player1, player2],
+        'players': (player1, player2),
         'queue': event_q,
         'board': board
     }
@@ -77,7 +78,7 @@ def create_board(player1, player2, player1_side=None, player2_side=None):
             if isinstance(i, Minion):
                 the_side.append(i)
             elif isinstance(i, dict):
-                the_side.append(make_minion_dict(i))
+                the_side.append(make_minion_from_dict(i))
         player1.minions = the_side
     if player2_side is not None:
         the_side = []
@@ -85,7 +86,7 @@ def create_board(player1, player2, player1_side=None, player2_side=None):
             if isinstance(i, Minion):
                 the_side.append(i)
             elif isinstance(i, dict):
-                the_side.append(make_minion_dict(i))
+                the_side.append(make_minion_from_dict(i))
         player2.minions = the_side
     return b
 
@@ -108,6 +109,7 @@ def make_minion(name,
                 cclass=None,
                 abilities=None,
                 source='deck'):
+    print('making minion')
     new_minion = Minion(name,
                         mana,
                         maxhp,
@@ -119,7 +121,9 @@ def make_minion(name,
     return new_minion
 
 
-def make_minion_dict(attributes):
+def make_minion_from_dict(attributes):
+    assert False
+    print('making minion from dict')
     name = attributes['name']
     mana = attributes['mana']
     maxhp = attributes['maxhp']
