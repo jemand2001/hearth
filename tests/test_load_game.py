@@ -28,7 +28,8 @@ def test_load_game_2():
         'player2': {
             'minions': [Minion('Blah', 1, 10, 0)],
             'pclass': 1,
-            'deck': []
+            'deck': [],
+            'hero': {'pclass': 2, 'name': 'AYY', 'maxhp': 500, 'hp': 10}
         }
     }
     the_game = make_game(game_state)
@@ -57,7 +58,8 @@ def test_load_game_dict():
                 }
             ],
             'pclass': 1,
-            'deck': []
+            'deck': [],
+            'hero': {'pclass': 2, 'name': 'AYY', 'maxhp': 500, 'hp': 10}
         }
     }
     the_game = make_game(game_state)

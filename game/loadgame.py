@@ -22,6 +22,7 @@ def make_game(contents=None):
     'players': [<Player player1>, <Player player2>]
     'queue': <EventQueue instance>
     }"""
+    #assert False, contents
     if contents is None:
         contents = {}
     if 'eventqueue' in contents:
@@ -38,15 +39,15 @@ def make_game(contents=None):
         player1 = create_player(pclass, deck, event_q)
         player1_side = None
     if 'player2' in contents:
-        p2 = contents['player1']
+        p2 = contents['player2']
         player2 = create_player(p2['pclass'], p2['deck'], event_q)
         player2_side = p2['minions']
+        assert player2_side != []
     else:
         pclass = randint(0, 1)
         deck = make_def_deck(pclass)
         player2 = create_player(pclass, deck, event_q)
         player2_side = None
-    assert False, (p2)
     board = create_board(player1, player2, player1_side, player2_side)
     game = Game(player1, player2, board)
     return {
@@ -109,29 +110,39 @@ def make_minion(name,
                 cclass=None,
                 abilities=None,
                 source='deck'):
-    print('making minion')
     new_minion = Minion(name,
                         mana,
                         maxhp,
+                        dmg,
                         cclass,
                         abilities,
                         source)
     if hp is not None:
-        new_minion.setprop('hp', hp)
+        new_minion.set_prop('hp', hp)
     return new_minion
 
 
 def make_minion_from_dict(attributes):
-    assert False
-    print('making minion from dict')
     name = attributes['name']
-    mana = attributes['mana']
+    mana = attributes['cost']
     maxhp = attributes['maxhp']
-    cclass = attributes['cclass'] or '*'
-    hp = attributes['hp'] or maxhp
+    try:
+        cclass = attributes['cclass']
+    except KeyError:
+        cclass = None
+    try:
+        hp = attributes['hp']
+    except KeyError:
+        hp = maxhp
     dmg = attributes['dmg']
-    abilities = attributes['abilities'] or ''
-    source = attributes['source'] or 'limbo'
+    try:
+        abilities = attributes['abilities']
+    except KeyError:
+        abilities = None
+    try:
+        source = attributes['source']
+    except KeyError:
+        source = 'limbo'
     return make_minion(name,
                        mana,
                        maxhp,
