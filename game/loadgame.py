@@ -21,6 +21,7 @@ def make_game(contents=None):
     'game': <Game instance>
     'players': [<Player player1>, <Player player2>]
     'queue': <EventQueue instance>
+    'board': <Board instance>
     }"""
     #assert False, contents
     if contents is None:
@@ -42,7 +43,6 @@ def make_game(contents=None):
         p2 = contents['player2']
         player2 = create_player(p2['pclass'], p2['deck'], event_q)
         player2_side = p2['minions']
-        assert player2_side != []
     else:
         pclass = randint(0, 1)
         deck = make_def_deck(pclass)
