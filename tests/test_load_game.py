@@ -2,7 +2,6 @@ from game.loadgame import make_game
 from game.game import Game
 from game.player import Player
 from game.events import *
-from game.savegame import save_game
 from card.deck import *
 from game.board import *
 import pytest
@@ -122,3 +121,32 @@ def test_load_game_dict2():
     assert player1.minions != []
 
 
+def test_save_game():
+    game_state = {
+        'player1': {
+            'minions': [
+                {
+                    'type': 1,
+                    'name': 'Blah',
+                    'cost':1,
+                    'hp': 10,
+                    'maxhp':10,
+                    'dmg': 0,
+                    'cclass': '*'
+                }
+            ],
+            'pclass': 0,
+            'deck': {'CRAZY!': {'type': 0, 'mana':0, 'effect': '10_dmg', 'cclass': '*'}},
+            'hero': {'pclass': 1, 'name': 'WUT', 'maxhp': 200, 'hp': 5}
+        },
+        'player2': {
+            'minions': [],
+            'pclass': 1,
+            'deck': [],
+            'hero': {'pclass': 2, 'name': 'AYY', 'maxhp': 500, 'hp': 10}
+        }
+    }
+    the_game = make_game(game_state)
+    mygame = the_game['game']
+    game_state2 = mygame.save()
+    assert game_state == game_state2

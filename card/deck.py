@@ -118,6 +118,13 @@ class Deck:
     def copy(self):
         return Deck(self.pclass, self.deck)
 
+    @property
+    def deconst(self):
+        res = []
+        for i in self.deck:
+            res.append(i.deconst)
+        return res
+
     def __len__(self):
         return len(self.deck)
 
@@ -137,6 +144,13 @@ class Hand:
             self.hand.extend(cards)
         else:
             self.hand.append(cards)
+
+    @property
+    def deconst(self):
+        res = []
+        for i in self.deck:
+            res.append(i.deconst)
+        return res
 
     def __getitem__(self, index):
         return self.hand[index]

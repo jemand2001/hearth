@@ -11,6 +11,7 @@ class Player:
         events: the global EventQueue
         mana: the amount of mana the player starts with"""
         # super(self).__init__()
+        self.pclass_num = pclass
         self.pclass = list(c.keys())[pclass]
         self._hero = c[list(c.keys())[pclass]][0].copy()
         if isinstance(deck, Deck):

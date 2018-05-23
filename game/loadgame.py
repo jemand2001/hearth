@@ -105,11 +105,11 @@ def make_spell(cclass, name, mana, hp, effect):
 def make_minion(name,
                 mana,
                 maxhp=1,
-                hp=None,
                 dmg=0,
                 cclass=None,
                 abilities=None,
-                source='deck'):
+                source='deck',
+                properties=None):
     new_minion = Minion(name,
                         mana,
                         maxhp,
@@ -117,8 +117,8 @@ def make_minion(name,
                         cclass,
                         abilities,
                         source)
-    if hp is not None:
-        new_minion.set_prop('hp', hp)
+    if properties is not None:
+        new_minion.properties.update(properties)
     return new_minion
 
 
@@ -143,11 +143,16 @@ def make_minion_from_dict(attributes):
         source = attributes['source']
     except KeyError:
         source = 'limbo'
+    try:
+        properties = attributes['properties']
+        properties.pop('abilities')
+    except KeyError:
+        properties = None
     return make_minion(name,
                        mana,
                        maxhp,
-                       hp,
                        dmg,
                        cclass,
                        abilities,
-                       source)
+                       source,
+                       properties)

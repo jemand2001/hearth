@@ -12,7 +12,8 @@ class Game:
         \t\t'class': pclass (as in data.CLASSES),
         \t\t'deck': deck (in a format understandable by Deck.__init__)}"""
         self.events = EventQueue()
-        self.players = {}
+        self.players = []
+        """
         if not isinstance(p1, Player):
             self.players[p1['name']] = self.create_player(p1)
         else:
@@ -21,11 +22,21 @@ class Game:
             self.players[p2['name']] = self.create_player(p2)
         else:
             self.players[p2.name] = p2
+        """
+        if not isinstance(p1, Player):
+            self.players.append(self.create_player(p1))
+        else:
+            self.players.append(p1)
+        if not isinstance(p2, Player):
+            self.players.append(self.create_player(p1))
+        else:
+            self.players.append(p2)
         if board is None:
             self.board = Board(self.players[p1['name']],
                                self.players[p2['name']])
         else:
             self.board = board
+        self.has_started = False
 
     def create_player(self, player):
         if isinstance(player, Player):
@@ -48,8 +59,36 @@ class Game:
         self.otherplayer.end_turn()
 
     def start(self):
-        startplayer_name = random.choice(self.players.keys())
-        self.startplayer = self.players[startplayer_name]
+        startplayer_num = random.choice(enumerate(self.players))
+        self.startplayer = self.players[startplayer_num]
         self.startplayer.start_game()
         self.otherplayer = self.board.get_enemy(self.startplayer)
         self.otherplayer.start_game(False)
+        self.has_started = True
+
+
+    def save(self):
+        player1 = self.players[0]
+        player2 = self.players[1]
+        savestate = {
+            'player1': {
+                'minions': [],
+                'pclass': player1.pclass_num,
+                'deck': player1.deck.deconst,
+                'hero': None
+            },
+            'player2': {
+                'minions': [],
+                'pclass': player2.pclass_num,
+                'deck': player2.deck.deconst,
+                'hero': None,
+            }
+        }
+        if self.has_started:
+            savestate['player1']['hand'] = player1.hand.deconst
+            savestate['player2']['hand'] = player2.hand.deconst
+        for i in player1.minions:
+            savestate['player1']['minions'].append(i.deconst)
+        for i in player2.minions:
+            savestate['player2']['minions'].append(i.deconst)
+        return savestate

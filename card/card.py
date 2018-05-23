@@ -52,6 +52,11 @@ class Card:
             new_card.register_prop(i, self.get_prop(i))
         return new_card
 
+    @property
+    def deconst(self):
+        res = {}
+        return res
+
 
 class PermanentCard(Card):
     def __init__(self, name, mana, cardtype, cardclass, source='deck'):
