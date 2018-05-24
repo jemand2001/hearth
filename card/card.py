@@ -52,19 +52,36 @@ class Card:
             new_card.register_prop(i, self.get_prop(i))
         return new_card
 
-    @property
-    def deconst(self):
-        res = {}
+    def _deconst(self):
+        res = {
+            'name': self.name,
+            'cost': self.cost,
+        }
+        res.update(self.properties)
         return res
 
 
 class PermanentCard(Card):
-    def __init__(self, name, mana, cardtype, cardclass, source='deck'):
+    def __init__(self, name, mana, cardtype, cardclass, abilities, source='deck'):
         Card.__init__(self, name, mana, cardtype, cardclass, source)
         self.register_prop('on_battlefield', False)
+        for i in abilities.keys():
+            self.register_prop(i, make_effect(abilities[i]))
 
 
 class HealthCard(PermanentCard):
+    def __init__(self,
+                 name,
+                 mana,
+                 hp=1,
+                 ctype,
+                 cclass=None,
+                 abilities=None,
+                 source='deck'):
+        PermanentCard.__init__(self, name, mana, ctype, cclass, abilities, source)
+        self.register_prop('tophp', hp)
+        self.register_prop('hp', hp)
+
     def get_damaged(self, amount):
         print('damaging %s by %d' % (str(self), amount))
         self.change_prop('hp', -amount)

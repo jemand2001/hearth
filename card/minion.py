@@ -21,13 +21,9 @@ class Minion(HealthCard, AttackCard):
             cclass = '*'
         if abilities is None:
             abilities = {}
-        HealthCard.__init__(self, name, mana,
+        HealthCard.__init__(self, name, mana, hp,
                             TYPES.index('minion'), cclass, source)
-        self.register_prop('tophp', hp)
-        self.register_prop('hp', hp)
         self.register_prop('dmg', dmg)
-        for i in abilities.keys():
-            self.register_prop(i, make_effect(abilities[i]))
 
     def play(self, player, target):
         self.summon(player, 'hand')
@@ -68,3 +64,8 @@ class Minion(HealthCard, AttackCard):
     @player.setter
     def player(self, value):
         self.set_prop('player', value)
+
+    @property
+    def deconst(self):
+        res = self._deconst
+        return res

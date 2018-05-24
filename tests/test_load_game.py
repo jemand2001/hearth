@@ -147,6 +147,13 @@ def test_save_game():
         }
     }
     the_game = make_game(game_state)
+    print(the_game['players'][0].deck.deck)
+    print(the_game['players'][0].minions)
     mygame = the_game['game']
     game_state2 = mygame.save()
-    assert game_state == game_state2
+    p1_minions = game_state2['player1']['minions']
+    p1_deck = game_state2['player1']['deck']
+    print(p1_minions)
+    print(p1_deck)
+    assert game_state2['player2']['minions'] == []
+    assert game_state2['player2']['deck'] == []
