@@ -9,7 +9,8 @@ class Hero(HealthCard, AttackCard):
         mana:   cost in mana (int)
         effect: spell effect (func, I guess)"""
         ctype = TYPES.index('hero')
-        pdb.set_trace()
+        assert type(ctype) == int, ctype
+        #pdb.set_trace()
         HealthCard.__init__(self, name, mana, ctype, cardclass)
         self.register_prop('effect', make_effect(effect))
         self.register_prop('tophp', hp)

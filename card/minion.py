@@ -45,8 +45,7 @@ class Minion(HealthCard, AttackCard):
     def copy(self):
         new_card = Minion(self.name,
                           self.cost,
-                          TYPES.index(self.ctype),
-                          self.cardclass)
+                          cclass=self.cardclass)
         return self._copy(new_card)
 
     def die(self):

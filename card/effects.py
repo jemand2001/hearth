@@ -3,7 +3,7 @@ from importlib import import_module
 from pdb import set_trace
 from game.error import FriendlyEnemyError, TargetError, ConditionError
 from utils import str2dict
-from .card import HealthCard
+from .card import HealthCard, TYPES
 
 
 def make_effect(effect):
@@ -51,7 +51,7 @@ class Effect:
     def _select_target(self, card, player, target):
         mytarget = None
         if self.effect['targets'] == 'self':
-            if card.ctype == 'spell':
+            if TYPES[card.ctype] == 'spell':
                 mytarget = player.hero
             else:
                 mytarget = card
@@ -82,7 +82,7 @@ class Effect:
                                          ' on the other side!')
         if 'minion' in target_mod:
             if the_targets == 'any':
-                if target.ctype != 'minion':
+                if TYPES[target.ctype] != 'minion':
                     raise TargetError('wrong card type')
                 if ((('enemy' in target_mod
                       and target in player.battlefield['minions'])
@@ -99,7 +99,7 @@ class Effect:
                 mytarget = player.board.minions
         elif 'hero' in target_mod:
             if the_targets == 'any':
-                if target.ctype != 'hero':
+                if TYPES[target.ctype] != 'hero':
                     raise TargetError('this can only work on hero cards')
                 else:
                     mytarget = target
@@ -157,7 +157,7 @@ class HealthEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         print('HealthEffect triggered', self.effect)
-        if 'amount' in self.effect.keys() and card.ctype == 'spell':
+        if 'amount' in self.effect.keys() and TYPES[card.ctype] == 'spell':
             amount = self.effect['amount'] + player.spellpower
         else:
             amount = self.effect['amount']

@@ -13,10 +13,10 @@ class Card:
         cardtype: type of the card (int)
         """
         # self.board = board
-        #assert type(cardtype) == int, cardtype
+        assert type(cardtype) == int, cardtype
         self.name = name
         self.cost = mana
-        self.ctype = TYPES[cardtype]
+        self.ctype = cardtype
         self.cardclass = cardclass
         self.properties = {}
         self.register_prop('in_deck', False)
@@ -67,7 +67,7 @@ class Card:
 
 class PermanentCard(Card):
     def __init__(self, name, mana, cardtype, cardclass, abilities, source='deck'):
-        #assert type(cardtype) == int, cardtype
+        assert type(cardtype) == int, cardtype
         Card.__init__(self, name, mana, cardtype, cardclass, source)
         self.register_prop('on_battlefield', False)
         for i in abilities.keys():
@@ -83,7 +83,7 @@ class HealthCard(PermanentCard):
                  cclass=None,
                  abilities=None,
                  source='deck'):
-        #assert type(ctype) == int, ctype
+        assert type(ctype) == int, ctype
         PermanentCard.__init__(self, name, mana, ctype, cclass, abilities, source)
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)

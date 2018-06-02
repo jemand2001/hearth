@@ -92,6 +92,7 @@ class Deck:
             raise TypeError('tried to add non-card to deck')
 
     def show_card(self, ctype=''):
+        """for some effects, this is necessary"""
         if ctype in ('', '*'):
             return random.choice(self.deck)
         if ctype.lower() in ('spell', 's', TYPES.index('spell')):

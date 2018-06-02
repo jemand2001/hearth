@@ -1,5 +1,6 @@
 # from card.hero import Hero
 from card.deck import Deck, Hand
+from card.card import TYPES
 from .data import CLASSES as c
 from .error import ManaError, TimeError
 
@@ -40,7 +41,7 @@ class Player:
         if c.cost <= self.actualmana:
             c.play(self, target)
             self.actualmana -= c.cost
-            if c.ctype == 'spell':
+            if TYPES[c.ctype] == 'spell':
                 self._graveyard.append(c)
         else:
             raise ManaError('Not enough mana (%i < %i)!' % (self.actualmana,
