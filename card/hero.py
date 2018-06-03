@@ -11,7 +11,8 @@ class Hero(HealthCard, AttackCard):
         ctype = TYPES.index('hero')
         assert type(ctype) == int, ctype
         #pdb.set_trace()
-        HealthCard.__init__(self, name, mana, ctype, cardclass)
+        HealthCard.__init__(self, name, mana, hp,
+                            ctype, cardclass)
         self.register_prop('effect', make_effect(effect))
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
@@ -32,7 +33,6 @@ class Hero(HealthCard, AttackCard):
     def copy(self):
         new_card = Hero(self.name,
                         self.cost,
-                        TYPES.index(self.ctype),
                         self.cardclass)
         return self._copy(new_card)
 
