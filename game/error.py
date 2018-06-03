@@ -27,3 +27,7 @@ class TimeError(Error):
 
 class ConditionError(Error):
     pass
+
+
+class PermissionError(Error):
+    pass

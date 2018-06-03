@@ -56,7 +56,8 @@ class Card:
             new_card.register_prop(i, self.get_prop(i))
         return new_card
 
-    def _deconst(self):
+    @property
+    def deconst(self):
         res = {
             'name': self.name,
             'cost': self.cost,

@@ -1,5 +1,6 @@
 from .card import HealthCard, AttackCard, TYPES
 from .effects import make_effect
+from game.error import PermissionError
 
 
 class Minion(HealthCard, AttackCard):
@@ -62,9 +63,7 @@ class Minion(HealthCard, AttackCard):
 
     @player.setter
     def player(self, value):
-        self.set_prop('player', value)
-
-    @property
-    def deconst(self):
-        res = self._deconst
-        return res
+        if not self.exists_prop(player):
+            self.set_prop('player', value)
+        else:
+            raise PermissionError('Tried changing owner?')
