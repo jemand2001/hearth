@@ -3,7 +3,6 @@ from importlib import import_module
 from pdb import set_trace
 from game.error import FriendlyEnemyError, TargetError, ConditionError
 from utils import str2dict
-from .card import HealthCard, TYPES
 
 
 def make_effect(effect):
@@ -162,13 +161,13 @@ class HealthEffect(Effect):
         else:
             amount = self.effect['amount']
         if self.effect['type'] == 'heal':
-            if isinstance(realtarget, HealthCard):
+            if realtarget.ctype in ('minion', 'hero'):
                 realtarget.get_healed(amount)
             elif isinstance(realtarget, (tuple, list)):
                 for i in realtarget:
                     i.get_healed(amount)
         elif self.effect['type'] == 'dmg':
-            if isinstance(realtarget, HealthCard):
+            if realtarget.ctype in ('minion', 'hero'):
                 realtarget.get_damaged(amount)
             elif isinstance(realtarget, (tuple, list)):
                 for i in realtarget:

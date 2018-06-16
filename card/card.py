@@ -1,7 +1,5 @@
 import pdb
-
-
-TYPES = ('spell', 'minion', 'hero',)
+from .effects import Effect
 
 
 class Card:
@@ -62,7 +60,12 @@ class Card:
             'name': self.name,
             'cost': self.cost,
         }
-        res.update(self.properties)
+        #res.update(self.properties)
+        for i in self.properties:
+            if isinstance(self.properties[i], Effect):
+                res[i] = self.properties[i].deconst
+            else:
+                res[i] = self.properties[i]
         return res
 
 

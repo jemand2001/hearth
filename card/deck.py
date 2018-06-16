@@ -1,5 +1,6 @@
 import random
-from .card import Card, TYPES
+from .card import Card
+from game.data import TYPES
 from .minion import Minion
 from .spell import Spell
 from .hero import Hero
