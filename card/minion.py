@@ -1,4 +1,5 @@
-from .card import HealthCard, AttackCard, TYPES
+from .card import HealthCard, AttackCard
+from . import TYPES
 from .effects import make_effect
 from game.error import PermissionError
 

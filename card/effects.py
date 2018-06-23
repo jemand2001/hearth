@@ -3,6 +3,7 @@ from importlib import import_module
 from pdb import set_trace
 from game.error import FriendlyEnemyError, TargetError, ConditionError
 from utils import str2dict
+from . import TYPES
 
 
 def make_effect(effect):
@@ -126,6 +127,10 @@ class Effect:
             realtarget = self._select_target(card, player, target)
             self._do_effect(card, player, realtarget)
 
+    @property
+    def deconst(self):
+        return self.effect
+
 
 class HealthEffect(Effect):
     def _parse_effect(self, parts):
@@ -155,7 +160,7 @@ class HealthEffect(Effect):
             self.effect['targets'] = 'any'
 
     def _do_effect(self, card, player, realtarget):
-        print('HealthEffect triggered', self.effect)
+        #print('HealthEffect triggered', self.effect)
         if 'amount' in self.effect.keys() and TYPES[card.ctype] == 'spell':
             amount = self.effect['amount'] + player.spellpower
         else:
@@ -197,7 +202,7 @@ class ChangeSideEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """change the target's side"""
-        print('ChangeSideEffect triggered', self.effect)
+        #print('ChangeSideEffect triggered', self.effect)
         if isinstance(realtarget, (tuple, list)):
             for i in realtarget:
                 self._do_effect(card, player, i)
@@ -241,7 +246,7 @@ class SummonEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """summon the specified minion"""
-        print('SummonEffect triggered', self.effect)
+        #print('SummonEffect triggered', self.effect)
         self.effect['minion'].summon(realtarget.player, 'effect')
 
 
@@ -266,7 +271,7 @@ class DestroyEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """destroy target minion"""
-        print('DestroyEffect triggered', self.effect)
+        #print('DestroyEffect triggered', self.effect)
         realtarget.die()
 
 
@@ -291,11 +296,11 @@ class MultiEffect:
         self.numtriggered = 0
 
     def do_effect(self, card, player, target='board'):
-        print('MultiEffect triggered!' + str(self.effect) + '\n{{{')
+        #print('MultiEffect triggered!' + str(self.effect) + '\n{{{')
         self.numtriggered += 1
         for i in self.effect['effects']:
             i.do_effect(card, player, target)
-        print('}}}')
+        #print('}}}')
 
 
 class CondEffect:
@@ -314,10 +319,10 @@ class CondEffect:
             return True
 
     def do_effect(self, card, player, target='board'):
-        print('CondEffect triggered --')
+        #print('CondEffect triggered --')
         if self.eval_condition():
-            print('successfully', self.effect)
+            #print('successfully', self.effect)
             self.effect['effect'].do_effect(card, player, target='board')
         else:
-            print('unsuccessfully', self.effect)
+            #print('unsuccessfully', self.effect)
             raise ConditionError('The conditions have not been met!')

@@ -12,4 +12,3 @@ CLASSES = {
 
 ROOT_PATH = path.abspath('..')
 IMG_PATH = path.join(ROOT_PATH, 'gui', 'images')
-TYPES = ('spell', 'minion', 'hero',)

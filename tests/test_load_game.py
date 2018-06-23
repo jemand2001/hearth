@@ -147,7 +147,7 @@ def test_save_game():
         }
     }
     the_game = make_game(game_state)
-    print(the_game['players'][0].deck.deck)
+    print(the_game['players'][0].deck)
     print(the_game['players'][0].minions)
     mygame = the_game['game']
     game_state2 = mygame.save()

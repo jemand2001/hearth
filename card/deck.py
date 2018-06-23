@@ -1,6 +1,6 @@
 import random
+from . import TYPES
 from .card import Card
-from game.data import TYPES
 from .minion import Minion
 from .spell import Spell
 from .hero import Hero
@@ -129,6 +129,9 @@ class Deck:
 
     def __len__(self):
         return len(self.deck)
+
+    def __repr__(self):
+        return str(self.deck)
 
 
 class Hand:

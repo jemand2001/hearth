@@ -1,6 +1,6 @@
 # from card.hero import Hero
 from card.deck import Deck, Hand
-from card.card import TYPES
+from card import TYPES
 from .data import CLASSES as c
 from .error import ManaError, TimeError
 

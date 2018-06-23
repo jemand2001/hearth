@@ -1,4 +1,5 @@
-from .card import Card, TYPES
+from .card import Card
+from . import TYPES
 from .effects import make_effect
 
 

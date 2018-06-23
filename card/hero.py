@@ -1,5 +1,5 @@
 from .card import HealthCard, AttackCard
-from game.data import TYPES
+from . import TYPES
 from .effects import make_effect
 import pdb
 
