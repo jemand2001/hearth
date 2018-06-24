@@ -5,6 +5,7 @@ from .default_deck import make_def_deck
 from .data import CLASSES
 from .player import Player
 from card.deck import *
+from card.effects import make_effect
 from random import randint
 
 
@@ -99,7 +100,8 @@ def make_hero(pclass, name, maxhp, hp=None):
 
 
 def make_spell(cclass, name, mana, hp, effect):
-    return Spell(name, mana, effect, cclass)
+    s = Spell(name, mana, effect, cclass)
+    return s
 
 
 def make_minion(name,

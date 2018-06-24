@@ -7,6 +7,8 @@ from . import TYPES
 
 
 def make_effect(effect):
+    if isinstance(effect, dict):
+        return _from_dict(effect)
     if effect == '':
         return
     if ',' in effect:
@@ -26,6 +28,24 @@ def make_effect(effect):
     return the_effect
 
 
+def _from_dict(effect):
+    if effect['type'] == 'health':
+        the_effect = HealthEffect(effect)
+    elif effect['type'] == 'changeside':
+        the_effect = ChangeSideEffect(effect)
+    elif effect['type'] == 'summon':
+        the_effect = SummonEffect(effect)
+    elif effect['type'] == 'destroy':
+        the_effect = DestroyEffect(effect)
+    elif effect['type'] == 'multi':
+        the_effect = MultiEffect(effect)
+    elif effect['type'] == 'cond':
+        the_effect = CondEffect(effect)
+    else:
+        raise TypeError('This effect doesn\'t exist.')
+    return the_effect
+
+
 class Effect:
     """the parent class for all effects"""
     def __init__(self, effect, *types):
@@ -37,8 +57,11 @@ class Effect:
             path = 'card.' + i.lower()
             ctype = import_module(path, i.capitalize())
             self.ctypes.append(ctype)
-        self.effect = {}
-        self.parse_effect(effect)
+        if isinstance(effect, dict):
+            self.effect = effect
+        else:
+            self.effect = {}
+            self.parse_effect(effect)
         self.numtriggered = 0
 
     def parse_effect(self, myeffect):
@@ -145,6 +168,7 @@ class HealthEffect(Effect):
         #            self'
         # x = amount; target defaults to any
         #################
+        self.effect['type'] = 'health'
         amount = int(parts[0])
         if amount == -1:
             amount = 99999999
@@ -221,9 +245,8 @@ class SummonEffect(Effect):
         # types:
         # str_int_int_int_str_dict
         #################
-        # assert False, self.ctypes
-        Minion = self.ctypes[0].Minion
         self.effect['type'] = 'summon'
+        Minion = self.ctypes[0].Minion
         name = parts[1]
         i, j, k = parts[2:5]
         mana = int(i)
@@ -292,6 +315,7 @@ class MultiEffect:
         for i in myeffect:
             new_effect = make_effect(i)
             myeffects.append(new_effect)
+        self.effect['type'] = 'multi'
         self.effect['effects'] = myeffects
         self.numtriggered = 0
 
@@ -310,6 +334,7 @@ class CondEffect:
         condition, effect = effect.split(':')
         self.parse_condition(condition)
         self.effect['effect'] = make_effect(effect)
+        self.effect['type'] = 'cond'
 
     def parse_condition(self, condition):
         self.effect['condition'] = []
