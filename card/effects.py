@@ -331,23 +331,28 @@ class CondEffect:
     """in case you want to only execute an effect on a condition"""
     def __init__(self, effect):
         self.effect = {}
-        condition, effect = effect.split(':')
+        condition, effect = effect.split(':', 1)
+        condition = condition.strip()
+        effect = effect.strip()
         self.parse_condition(condition)
         self.effect['effect'] = make_effect(effect)
         self.effect['type'] = 'cond'
+        self.numtriggered = 0
 
     def parse_condition(self, condition):
-        self.effect['condition'] = []
+        self.effect['condition'] = condition[3:].split()
 
     def eval_condition(self):
         if 'condition' not in self.effect:
-            return True
+            c = True
+        return c
 
     def do_effect(self, card, player, target='board'):
-        #print('CondEffect triggered --')
+        self.numtriggered += 1
+        print('CondEffect triggered --')
         if self.eval_condition():
-            #print('successfully', self.effect)
+            print('successfully', self.effect)
             self.effect['effect'].do_effect(card, player, target='board')
         else:
-            #print('unsuccessfully', self.effect)
-            raise ConditionError('The conditions have not been met!')
+            print('unsuccessfully', self.effect)
+            #raise ConditionError('The conditions have not been met!')
