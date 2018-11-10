@@ -1,16 +1,11 @@
 from importlib import import_module
 
 from game.error import FriendlyEnemyError, TargetError
-from utils import str2dict, _from_dict
+from utils import str2dict
 from . import TYPES
 
 
 def make_effect(effect):
-    # type: (str) -> Effect
-    """
-
-    :rtype: Effect
-    """
     if isinstance(effect, dict):
         return _from_dict(effect)
     if effect == '':
@@ -344,3 +339,21 @@ class CondEffect:
         else:
             print('unsuccessfully', self.effect)
             #raise ConditionError('The conditions have not been met!')
+
+
+def _from_dict(effect):
+    if effect['type'] == 'health':
+        the_effect = HealthEffect(effect)
+    elif effect['type'] == 'changeside':
+        the_effect = ChangeSideEffect(effect)
+    elif effect['type'] == 'summon':
+        the_effect = SummonEffect(effect)
+    elif effect['type'] == 'destroy':
+        the_effect = DestroyEffect(effect)
+    elif effect['type'] == 'multi':
+        the_effect = MultiEffect(effect)
+    elif effect['type'] == 'cond':
+        the_effect = CondEffect(effect)
+    else:
+        raise TypeError('This effect doesn\'t exist.')
+    return the_effect

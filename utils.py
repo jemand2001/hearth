@@ -1,6 +1,3 @@
-from card.effects import HealthEffect, ChangeSideEffect, SummonEffect, DestroyEffect, MultiEffect, CondEffect
-
-
 def str2dict(s):
     """
     parse a string to a dictionary.
@@ -62,19 +59,3 @@ def dict2str(d):
     return res
 
 
-def _from_dict(effect):
-    if effect['type'] == 'health':
-        the_effect = HealthEffect(effect)
-    elif effect['type'] == 'changeside':
-        the_effect = ChangeSideEffect(effect)
-    elif effect['type'] == 'summon':
-        the_effect = SummonEffect(effect)
-    elif effect['type'] == 'destroy':
-        the_effect = DestroyEffect(effect)
-    elif effect['type'] == 'multi':
-        the_effect = MultiEffect(effect)
-    elif effect['type'] == 'cond':
-        the_effect = CondEffect(effect)
-    else:
-        raise TypeError('This effect doesn\'t exist.')
-    return the_effect
