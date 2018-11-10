@@ -26,6 +26,23 @@ def make_effect(effect):
         raise TypeError('This effect doesn\'t exist.')
     return the_effect
 
+def _from_dict(effect):
+    if effect['type'] == 'health':
+        the_effect = HealthEffect(effect)
+    elif effect['type'] == 'changeside':
+        the_effect = ChangeSideEffect(effect)
+    elif effect['type'] == 'summon':
+        the_effect = SummonEffect(effect)
+    elif effect['type'] == 'destroy':
+        the_effect = DestroyEffect(effect)
+    elif effect['type'] == 'multi':
+        the_effect = MultiEffect(effect)
+    elif effect['type'] == 'cond':
+        the_effect = CondEffect(effect)
+    else:
+        raise TypeError("This effect doesn't exist.")
+    return the_effect
+
 
 class Effect:
     """the parent class for all effects"""
@@ -165,7 +182,7 @@ class HealthEffect(Effect):
             self.effect['targets'] = 'any'
 
     def _do_effect(self, card, player, realtarget):
-        #print('HealthEffect triggered', self.effect)
+        # print('HealthEffect triggered', self.effect)
         if 'amount' in self.effect.keys() and TYPES[card.ctype] == 'spell':
             amount = self.effect['amount'] + player.spellpower
         else:
@@ -324,7 +341,13 @@ class CondEffect:
     def parse_condition(self, condition):
         self.effect['condition'] = condition[3:].split()
 
-    def eval_condition(self):
+    @property
+    def condition_is_true(self):
+        """
+
+        :rtype: bool
+        """
+        print('condition: {}'.format(self.effect['condition']))
         c = False
         if 'condition' not in self.effect:
             c = True
@@ -333,27 +356,9 @@ class CondEffect:
     def do_effect(self, card, player, target='board'):
         self.numtriggered += 1
         print('CondEffect triggered --')
-        if self.eval_condition():
+        if self.condition_is_true:
             print('successfully', self.effect)
             self.effect['effect'].do_effect(card, player, target='board')
         else:
             print('unsuccessfully', self.effect)
-            #raise ConditionError('The conditions have not been met!')
-
-
-def _from_dict(effect):
-    if effect['type'] == 'health':
-        the_effect = HealthEffect(effect)
-    elif effect['type'] == 'changeside':
-        the_effect = ChangeSideEffect(effect)
-    elif effect['type'] == 'summon':
-        the_effect = SummonEffect(effect)
-    elif effect['type'] == 'destroy':
-        the_effect = DestroyEffect(effect)
-    elif effect['type'] == 'multi':
-        the_effect = MultiEffect(effect)
-    elif effect['type'] == 'cond':
-        the_effect = CondEffect(effect)
-    else:
-        raise TypeError('This effect doesn\'t exist.')
-    return the_effect
+            # raise ConditionError('The conditions have not been met!')

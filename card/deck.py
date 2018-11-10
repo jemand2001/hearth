@@ -125,8 +125,8 @@ class Deck:
             return random.choice(h)
 
     def show_cards(self, card_type, number):
-        l = [self.show_card(card_type) for i in range(number)]
-        return l
+        cards = [self.show_card(card_type) for i in range(number)]
+        return cards
 
     def copy(self):
         return Deck(self.pclass, self.deck)
