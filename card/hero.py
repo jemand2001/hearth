@@ -1,19 +1,19 @@
-from .card import HealthCard, AttackCard
+from . import card
 from . import TYPES
 from .effects import make_effect
 import pdb
 
 
-class Hero(HealthCard, AttackCard):
+class Hero(card.HealthCard, card.AttackCard):
     def __init__(self, name, mana=0, cardclass='', hp=30, effect=''):
         """
         mana:   cost in mana (int)
         effect: spell effect (func, I guess)"""
         ctype = TYPES.index('hero')
         assert type(ctype) == int, ctype
-        #pdb.set_trace()
-        HealthCard.__init__(self, name, mana, hp,
-                            ctype, cardclass)
+        # pdb.set_trace()
+        card.HealthCard.__init__(self, name, mana, hp,
+                                 ctype, cardclass)
         self.register_prop('effect', make_effect(effect))
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)

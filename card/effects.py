@@ -1,12 +1,16 @@
-import random
 from importlib import import_module
-from pdb import set_trace
-from game.error import FriendlyEnemyError, TargetError, ConditionError
-from utils import str2dict
+
+from game.error import FriendlyEnemyError, TargetError
+from utils import str2dict, _from_dict
 from . import TYPES
 
 
 def make_effect(effect):
+    # type: (str) -> Effect
+    """
+
+    :rtype: Effect
+    """
     if isinstance(effect, dict):
         return _from_dict(effect)
     if effect == '':
@@ -23,24 +27,6 @@ def make_effect(effect):
         the_effect = SummonEffect(effect, 'minion')
     elif 'destroy' in effect:
         the_effect = DestroyEffect(effect)
-    else:
-        raise TypeError('This effect doesn\'t exist.')
-    return the_effect
-
-
-def _from_dict(effect):
-    if effect['type'] == 'health':
-        the_effect = HealthEffect(effect)
-    elif effect['type'] == 'changeside':
-        the_effect = ChangeSideEffect(effect)
-    elif effect['type'] == 'summon':
-        the_effect = SummonEffect(effect)
-    elif effect['type'] == 'destroy':
-        the_effect = DestroyEffect(effect)
-    elif effect['type'] == 'multi':
-        the_effect = MultiEffect(effect)
-    elif effect['type'] == 'cond':
-        the_effect = CondEffect(effect)
     else:
         raise TypeError('This effect doesn\'t exist.')
     return the_effect
@@ -72,12 +58,12 @@ class Effect:
         self._parse_effect(parts)
 
     def _select_target(self, card, player, target):
-        mytarget = None
+        my_target = None
         if self.effect['targets'] == 'self':
             if TYPES[card.ctype] == 'spell':
-                mytarget = player.hero
+                my_target = player.hero
             else:
-                mytarget = card
+                my_target = card
         aplayer = player.get_enemy(player)
         the_targets = self.effect['targets']
         if 'target_mod' in self.effect:
@@ -86,20 +72,20 @@ class Effect:
             target_mod = []
         if the_targets == 'all':
             if not target_mod or target_mod in (['minion'], ['hero']):
-                mytarget = player.board.battlefield
+                my_target = player.board.battlefield
             elif target_mod == ['friendly', ]:
-                mytarget = player.battlefield_list
+                my_target = player.battlefield_list
             elif target_mod == ['enemy', ]:
-                mytarget = aplayer.battlefield_list
+                my_target = aplayer.battlefield_list
         elif the_targets == 'any':
             if not target_mod or target_mod in (['minion'], ['hero']):
-                mytarget = target
+                my_target = target
             elif ((target_mod == ['friendly', ]
                    and target in player.battlefield_list)):
-                mytarget = target
+                my_target = target
             elif ((target_mod == ['enemy', ]
                    and target in aplayer.battlefield_list)):
-                mytarget = target
+                my_target = target
             else:
                 raise FriendlyEnemyError('this effect can only work'
                                          ' on the other side!')
@@ -113,27 +99,27 @@ class Effect:
                          and target in aplayer.battlefield['minions']))):
                     raise FriendlyEnemyError('can only be used'
                                              ' on the other side')
-                mytarget = target
+                my_target = target
             elif the_targets == 'all':
                 if 'friendly' in target_mod:
-                    mytarget = player.battlefield['minions']
+                    my_target = player.battlefield['minions']
                 elif 'enemy' in target_mod:
-                    mytarget = aplayer.battlefield['minions']
-                mytarget = player.board.minions
+                    my_target = aplayer.battlefield['minions']
+                my_target = player.board.minions
         elif 'hero' in target_mod:
             if the_targets == 'any':
                 if TYPES[target.ctype] != 'hero':
                     raise TargetError('this can only work on hero cards')
                 else:
-                    mytarget = target
+                    my_target = target
             elif the_targets == 'all':
                 if 'friendly' in target_mod:
-                    mytarget = player.hero
+                    my_target = player.hero
                 elif 'enemy' in target_mod:
-                    mytarget = aplayer.hero
+                    my_target = aplayer.hero
                 else:
-                    mytarget = player.board.heroes
-        return mytarget
+                    my_target = player.board.heroes
+        return my_target
 
     def do_effect(self, card, player, target='board'):
         """player: Player that the card this effect is caused by belongs to
@@ -226,7 +212,7 @@ class ChangeSideEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """change the target's side"""
-        #print('ChangeSideEffect triggered', self.effect)
+        # print('ChangeSideEffect triggered', self.effect)
         if isinstance(realtarget, (tuple, list)):
             for i in realtarget:
                 self._do_effect(card, player, i)
@@ -269,7 +255,7 @@ class SummonEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """summon the specified minion"""
-        #print('SummonEffect triggered', self.effect)
+        # print('SummonEffect triggered', self.effect)
         self.effect['minion'].summon(realtarget.player, 'effect')
 
 
@@ -294,7 +280,7 @@ class DestroyEffect(Effect):
 
     def _do_effect(self, card, player, realtarget):
         """destroy target minion"""
-        #print('DestroyEffect triggered', self.effect)
+        # print('DestroyEffect triggered', self.effect)
         realtarget.die()
 
 
@@ -308,7 +294,8 @@ class DestroyEffect(Effect):
 class MultiEffect:
     """in case you want to execute multiple effects at once"""
     def __init__(self, effect):
-        """multiple effects are separated by a comma (',')"""
+        """multiple effects are separated by a comma (',')
+        """
         self.effect = {}
         myeffect = effect.split(',')
         myeffects = []
@@ -320,11 +307,11 @@ class MultiEffect:
         self.numtriggered = 0
 
     def do_effect(self, card, player, target='board'):
-        #print('MultiEffect triggered!' + str(self.effect) + '\n{{{')
+        # print('MultiEffect triggered!' + str(self.effect) + '\n{{{')
         self.numtriggered += 1
         for i in self.effect['effects']:
             i.do_effect(card, player, target)
-        #print('}}}')
+        # print('}}}')
 
 
 class CondEffect:
@@ -343,6 +330,7 @@ class CondEffect:
         self.effect['condition'] = condition[3:].split()
 
     def eval_condition(self):
+        c = False
         if 'condition' not in self.effect:
             c = True
         return c

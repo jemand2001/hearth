@@ -11,6 +11,6 @@ setup(
     scripts=['main.py'],
     package_data={
         'gui': ['*.png', '*.bmp']
-    }
+    }, install_requires=['pygame']
 )
 # install_requires=['pygame'],
