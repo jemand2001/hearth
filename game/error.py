@@ -31,3 +31,7 @@ class ConditionError(Error):
 
 class PermissionError(Error):
     pass
+
+
+class FatalError(Error):
+    pass

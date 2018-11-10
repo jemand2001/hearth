@@ -4,6 +4,7 @@ from .card import Card
 from .minion import Minion
 from .spell import Spell
 from .hero import Hero
+from game.error import FatalError
 
 
 class Deck:
@@ -37,13 +38,15 @@ class Deck:
                         abilities = cards[i]['effects']
                     except KeyError:
                         abilities = {}
-                        new_card = Minion(i, mana, hp, dmg, cclass, abilities)
+                    new_card = Minion(i, mana, hp, dmg, cclass, abilities)
                 elif TYPES[cards[i]['type']] == 'hero':
                     hp = cards[i]['hp']
                     effect = cards[i]['effect']
                     new_card = Hero(i, mana, cclass, hp, effect)
+                else:
+                    raise FatalError('specified invalid card type')
                 self.put_card_on_index(new_card, 0)
-        else:
+        elif isinstance(cards, (list, tuple)):
             for i in cards:
                 if isinstance(i, Card):
                     self.put_card_on_index(i, 0)
@@ -67,7 +70,11 @@ class Deck:
                     hp = cprops['hp']
                     effect = cprops['effect']
                     new_card = Hero(cname, mana, cclass, hp, effect)
+                else:
+                    raise FatalError('specified invalid card type')
                 self.put_card_on_index(new_card, 0)
+        else:
+            raise FatalError('invalid input of cards')
         random.shuffle(self.deck)
 
     def draw_cards(self, cnt=1):
@@ -83,7 +90,7 @@ class Deck:
 
     def shuffle_card(self, card):
         """card: Card instance"""
-        i = random.randint(0, len(self.deck)+1)
+        i = random.randint(0, len(self.deck) + 1)
         self.put_card_on_index(card, i)
 
     def put_card_on_index(self, card, index=0):
@@ -92,30 +99,34 @@ class Deck:
         else:
             raise TypeError('tried to add non-card to deck')
 
-    def show_card(self, ctype=''):
+    def show_card(self, card_type=''):
         """for some effects, this is necessary"""
-        if ctype in ('', '*'):
+        if card_type in ('', '*'):
             return random.choice(self.deck)
-        if ctype.lower() in ('spell', 's', TYPES.index('spell')):
+        if card_type.lower() in ('spell', 's', TYPES.index('spell')):
             # make a collection of all spells in the deck
             s = []
             for i in self.deck:
                 if isinstance(i, Spell):
                     s.append(i)
             return random.choice(s)
-        if ctype.lower() in ('minion', 'm', TYPES.index('minion')):
+        if card_type.lower() in ('minion', 'm', TYPES.index('minion')):
             # make a collection of all minions in the deck
             m = []
             for i in self.deck:
                 if isinstance(i, Minion):
                     m.append(i)
             return random.choice(m)
-        if ctype.lower() in ('hero', 'h', TYPES.index('hero')):
+        if card_type.lower() in ('hero', 'h', TYPES.index('hero')):
             h = []
             for i in self.deck:
                 if isinstance(i, Hero):
                     h.append(i)
             return random.choice(h)
+
+    def show_cards(self, card_type, number):
+        l = [self.show_card(card_type) for i in range(number)]
+        return l
 
     def copy(self):
         return Deck(self.pclass, self.deck)
