@@ -4,7 +4,7 @@ from .player import Player
 from .events import EventQueue
 
 
-class Game:
+class Game(object):
     def __init__(self, p1, p2, board=None):
         """p1, p2: dict
         \tformat: {

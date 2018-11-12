@@ -3,7 +3,7 @@ from pygame import (MOUSEBUTTONDOWN, MOUSEBUTTONUP,
                     MOUSEMOTION, QUIT, event, mouse)
 
 
-class MouseController:
+class MouseController(object):
     def __init__(self, screen):
         self.screen = screen
 

@@ -5,7 +5,7 @@ from .data import CLASSES as c
 from .error import ManaError, TimeError
 
 
-class Player:
+class Player(object):
     def __init__(self, pclass, deck, events, mana=0, name=''):
         """pclass: class of the player (int)
         deck: the deck of the player

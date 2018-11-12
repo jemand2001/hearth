@@ -7,7 +7,7 @@ from .hero import Hero
 from game.error import FatalError
 
 
-class Deck:
+class Deck(object):
     def __init__(self, pclass, cards=()):
         """
         cards: dict/list of tuples that resembles cards with effects&stuff

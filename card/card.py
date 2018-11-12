@@ -2,7 +2,7 @@ import pdb
 from .effects import Effect
 
 
-class Card:
+class Card(object):
     """Base Card Class. All Card type classes must be derived from this."""
 
     def __init__(self, name, mana, cardtype, cardclass, source='deck'):

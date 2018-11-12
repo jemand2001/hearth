@@ -1,6 +1,6 @@
 
 
-class EventQueue:
+class EventQueue(object):
     def __init__(self):
         self.events = []
 
@@ -20,7 +20,7 @@ class EventQueue:
         return self.events.pop(0)
 
 
-class GameEvent:
+class GameEvent(object):
     def __init__(self, etype, args=None):
         if args is None:
             args = {}

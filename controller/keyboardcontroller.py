@@ -1,7 +1,7 @@
 from pygame import KEYDOWN, KEYUP, event
 
 
-class KeyboardController:
+class KeyboardController(object):
     def __init__(self, screen):
         self.screen = screen
 
