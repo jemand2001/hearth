@@ -26,6 +26,7 @@ def make_effect(effect):
         raise TypeError('This effect doesn\'t exist.')
     return the_effect
 
+
 def _from_dict(effect):
     if effect['type'] == 'health':
         the_effect = HealthEffect(effect)
@@ -46,6 +47,7 @@ def _from_dict(effect):
 
 class Effect:
     """the parent class for all effects"""
+
     def __init__(self, effect, *types):
         """effect: string describing the effect.
         e.g. '10_dmg' => deal 10 damage to target
@@ -290,10 +292,10 @@ class DestroyEffect(Effect):
         if parts[-1] != 'destroy':
             self.effect['target_mod'].append(parts[-1])
 
-    def _do_effect(self, card, player, realtarget):
+    def _do_effect(self, card, player, real_target):
         """destroy target minion"""
         # print('DestroyEffect triggered', self.effect)
-        realtarget.die()
+        real_target.die(self)
 
 
 ############
@@ -305,6 +307,7 @@ class DestroyEffect(Effect):
 
 class MultiEffect:
     """in case you want to execute multiple effects at once"""
+
     def __init__(self, effect):
         """multiple effects are separated by a comma (',')
         """
@@ -328,6 +331,7 @@ class MultiEffect:
 
 class CondEffect:
     """in case you want to only execute an effect on a condition"""
+
     def __init__(self, effect):
         self.effect = {}
         condition, effect = effect.split(':', 1)

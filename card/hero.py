@@ -37,6 +37,7 @@ class Hero(card.HealthCard, card.AttackCard):
                         self.cardclass)
         return self._copy(new_card)
 
-    def die(self):
+    def die(self, reason):
+        self.reason_died = reason
         raise NotImplementedError('The game should end now. '
                                   'This is not implemented!')

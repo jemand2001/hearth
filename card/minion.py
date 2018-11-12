@@ -1,6 +1,5 @@
 from .card import HealthCard, AttackCard
 from . import TYPES
-from .effects import make_effect
 from game.error import PermissionError
 
 
@@ -50,7 +49,8 @@ class Minion(HealthCard, AttackCard):
                           cclass=self.cardclass)
         return self._copy(new_card)
 
-    def die(self):
+    def die(self, reason):
+        self.reason_died = reason
         if self.exists_prop('deathrattle'):
             self.get_prop('deathrattle').do_effect(
                 self,

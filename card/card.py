@@ -4,6 +4,7 @@ from .effects import Effect
 
 class Card:
     """Base Card Class. All Card type classes must be derived from this."""
+
     def __init__(self, name, mana, cardtype, cardclass, source='deck'):
         """
         name:     name of the card (str)
@@ -60,7 +61,7 @@ class Card:
             'name': self.name,
             'cost': self.cost,
         }
-        #res.update(self.properties)
+        # res.update(self.properties)
         for i in self.properties:
             if isinstance(self.properties[i], Effect):
                 res[i] = self.properties[i].deconst
@@ -88,9 +89,9 @@ class HealthCard(PermanentCard):
                  cclass=None,
                  abilities=None,
                  source='deck'):
-        #print ctype, type(ctype)
+        # print ctype, type(ctype)
         # pdb.set_trace()
-        #assert ctype == 2, ctype #type(ctype) == int, ctype
+        # assert ctype == 2, ctype #type(ctype) == int, ctype
         PermanentCard.__init__(self, name, mana, ctype, cclass, abilities, source)
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
@@ -103,7 +104,7 @@ class HealthCard(PermanentCard):
             self.get_prop('on_dmg').do_effect(self,
                                               self.get_prop('player'))
         if self.get_prop('hp') <= 0:
-            self.die()
+            self.die(reason='damage({})'.format(amount))
 
     def get_healed(self, amount):
         print('healing %s by %d' % (str(self), amount))
