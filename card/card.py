@@ -1,5 +1,5 @@
 import pdb
-from .effects import Effect
+from .effects import make_effect, Effect
 
 
 class Card(object):
@@ -12,7 +12,7 @@ class Card(object):
         cardtype: type of the card (int)
         """
         # self.board = board
-        assert type(cardtype) == int, cardtype
+        assert isinstance(cardtype, int), cardtype
         self.name = name
         self.cost = mana
         self.ctype = cardtype
@@ -38,7 +38,7 @@ class Card(object):
 
     def change_prop(self, name, amount):
         # assert False, amount
-        if not isinstance(self.get_prop(name), (int, float, long)):
+        if not isinstance(self.get_prop(name), (int, float)):
             raise TypeError('prop %s can not be added to' % name)
         self.properties[name] += amount
         print('Changing property \"%s\" of %s (new value: %s)'
