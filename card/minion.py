@@ -9,7 +9,7 @@ class Minion(HealthCard, AttackCard):
                  mana,
                  hp=1,
                  dmg=0,
-                 cclass=None,
+                 cklass=None,
                  abilities=None,
                  source='deck'):
         """
@@ -18,13 +18,12 @@ class Minion(HealthCard, AttackCard):
         dmg:    damage (int)
         cclass: the class the minion belongs to (str)
         abilities: effects that happen when something happens ((str,str))"""
-        if cclass is None:
-            cclass = '*'
-        if abilities is None:
-            abilities = {}
+        if cklass is None:
+            cklass = '*'
         HealthCard.__init__(self, name, mana, hp,
-                            TYPES.index('minion'), cclass, source)
+                            TYPES.index('minion'), cklass, abilities, source)
         self.register_prop('dmg', dmg)
+        self.reason_died = None
 
     def play(self, player, target):
         self.summon(player, 'hand')
@@ -36,6 +35,7 @@ class Minion(HealthCard, AttackCard):
         self.set_prop('in_deck', False)
         self.set_prop('on_battlefield', True)
         self.register_prop('board', player.board)
+        self.register_prop('source', from_where)
         self.register_player(player)
         player.add_minion(self)
 
@@ -46,7 +46,7 @@ class Minion(HealthCard, AttackCard):
     def copy(self):
         new_card = Minion(self.name,
                           self.cost,
-                          cclass=self.cardclass)
+                          cklass=self.klass)
         return self._copy(new_card)
 
     def die(self, reason):
@@ -64,7 +64,7 @@ class Minion(HealthCard, AttackCard):
 
     @player.setter
     def player(self, value):
-        if not self.exists_prop(player):
+        if not self.exists_prop('player'):
             self.set_prop('player', value)
         else:
             raise PermissionError('Tried changing owner?')

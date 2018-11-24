@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import sys
 import pygame
 from gui.main import BoardGO, CardGO, HeroGO
-from .mousecontroller import MouseController
-from .keyboardcontroller import KeyboardController
+from controller import MouseController
+from controller import KeyboardController
 
 
 BLACK = (0, 0, 0, 255)
@@ -35,7 +35,7 @@ class ScreenController(object):
                     self.res[0] / 2,
                     600
                 )
-                new_go = HeroGO(self.display, i.name, initpos)
+                new_go = HeroGO(self.display, a.name, initpos)
                 self.game_objects[i] = new_go
             else:
                 cards += 1
@@ -76,8 +76,7 @@ class ScreenController(object):
                 for go in self.game_objects.values():
                     if not isinstance(go, BoardGO):
                         if ((go.irect.left < events[el][0] < go.irect.right
-                             and go.irect.top > events[el][1]
-                             and events[el][1] > go.irect.bottom)):
+                             and go.irect.top > events[el][1] > go.irect.bottom)):
                             self.go_on_mouse = go
 
             elif (self.go_on_mouse is not None) and el == 'mousemotion':
@@ -138,18 +137,16 @@ if __name__ == '__main__':
 
     from card.hero import Hero
     from card.spell import Spell
+    from game import EventQueue
     # from card.minion import Minion
 
     random.seed(0)
 
+    q = EventQueue()
     deck1 = []
     for i in range(30):
         cname = 'somecard'
-        c = {
-            'type': random.randint(0, 1),
-            'mana': random.randint(0, 10)
-        }
-        c['cclass'] = 0
+        c = {'type': random.randint(0, 1), 'mana': random.randint(0, 10), 'cclass': 0}
 
         if c['type'] == 0:
             c['effect'] = '5_dmg'
@@ -160,7 +157,7 @@ if __name__ == '__main__':
 
     # print(deck1)
 
-    vplayer = Player(0, deck1)
+    vplayer = Player(0, deck1, q)
     special_card = Spell('little_friend', 0, '10_dmg', '*')
     vplayer.deck.put_card_on_index(special_card, len(vplayer.deck))
     vplayer.start_game()

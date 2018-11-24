@@ -19,5 +19,5 @@ class Spell(Card):
     def copy(self):
         new_card = Spell(self.name,
                          self.cost,
-                         self.cardclass)
+                         self.klass)
         return self._copy(new_card)

@@ -1,9 +1,10 @@
 import random
-from . import TYPES
-from .card import Card
-from .minion import Minion
-from .spell import Spell
-from .hero import Hero
+
+from card.card import Card
+from card.hero import Hero
+from card.minion import Minion
+from card.spell import Spell
+from . import *
 from game.error import FatalError
 
 

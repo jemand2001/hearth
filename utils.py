@@ -1,4 +1,4 @@
-def str2dict(s):
+def str2dict(s: str) -> dict:
     """
     parse a string to a dictionary.
     pattern: '{<key1>:<value1>|<key2>:<value2>|...}'
@@ -21,18 +21,17 @@ def str2dict(s):
     return res
 
 
-def str2tuple(mystr):
+def str2tuple(mystr: str) -> tuple:
     if '|' not in mystr:
         return mystr
-    my_str.strip('()')
-    return tuple(my_str.split('|'))
+    mystr.strip('()')
+    return tuple(mystr.split('|'))
 
 
-def str2things(mystr):
+def str2things(mystr: str):
     """
     convert a string to a different type
     """
-    res = None
     if '|' in mystr:
         try:
             res = str2dict(mystr)
@@ -46,7 +45,7 @@ def str2things(mystr):
     return res
 
 
-def dict2str(d):
+def dict2str(d: dict) -> str:
     """convert a dictionary to a string
     to be understood by str2dict"""
     res = '{'

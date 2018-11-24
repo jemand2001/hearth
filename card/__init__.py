@@ -1,1 +1,3 @@
+
+
 TYPES = ('spell', 'minion', 'hero',)

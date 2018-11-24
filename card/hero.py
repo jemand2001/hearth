@@ -5,7 +5,7 @@ import pdb
 
 
 class Hero(card.HealthCard, card.AttackCard):
-    def __init__(self, name, mana=0, cardclass='', hp=30, effect=''):
+    def __init__(self, name, mana=0, klass='', hp=30, effect=''):
         """
         mana:   cost in mana (int)
         effect: spell effect (func, I guess)"""
@@ -13,7 +13,7 @@ class Hero(card.HealthCard, card.AttackCard):
         assert type(ctype) == int, ctype
         # pdb.set_trace()
         card.HealthCard.__init__(self, name, mana, hp,
-                                 ctype, cardclass)
+                                 ctype, klass)
         self.register_prop('effect', make_effect(effect))
         self.register_prop('tophp', hp)
         self.register_prop('hp', hp)
@@ -34,7 +34,7 @@ class Hero(card.HealthCard, card.AttackCard):
     def copy(self):
         new_card = Hero(self.name,
                         self.cost,
-                        self.cardclass)
+                        self.klass)
         return self._copy(new_card)
 
     def die(self, reason):

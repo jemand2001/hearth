@@ -27,7 +27,7 @@ class GameEvent(object):
         self.type = etype
         for i in args.keys():
             # this actually works! VVV
-            exec 'self.%s = x' % i in {'self': self, 'x': args[i]}
+            exec('self.%s = x' % i in {'self': self, 'x': args[i]})
 
     def __repr__(self):
         mydata = {'type': self.type}

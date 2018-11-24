@@ -2,7 +2,7 @@ from importlib import import_module
 
 from game.error import FriendlyEnemyError, TargetError
 from utils import str2dict
-from . import TYPES
+from card import TYPES
 
 
 def make_effect(effect):
@@ -119,7 +119,8 @@ class Effect:
                     my_target = player.battlefield['minions']
                 elif 'enemy' in target_mod:
                     my_target = aplayer.battlefield['minions']
-                my_target = player.board.minions
+                else:
+                    my_target = player.board.minions
         elif 'hero' in target_mod:
             if the_targets == 'any':
                 if TYPES[target.ctype] != 'hero':
@@ -300,7 +301,8 @@ class DestroyEffect(Effect):
 
 ############
 #
-# Special forms of effects that are detatched from the actual effects
+# Special forms of effects that are detached from the actual effects
+# Just in case you want to do something crazy
 #
 ############
 

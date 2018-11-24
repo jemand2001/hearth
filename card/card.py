@@ -5,18 +5,18 @@ from .effects import make_effect, Effect
 class Card(object):
     """Base Card Class. All Card type classes must be derived from this."""
 
-    def __init__(self, name, mana, cardtype, cardclass, source='deck'):
+    def __init__(self, name, mana, card_type, klass, source='deck'):
         """
-        name:     name of the card (str)
-        mana:     cost in mana     (int)
-        cardtype: type of the card (int)
+        name:      name of the card (str)
+        mana:      cost in mana     (int)
+        card_type: type of the card (int)
         """
         # self.board = board
-        assert isinstance(cardtype, int), cardtype
+        assert isinstance(card_type, int), card_type
         self.name = name
         self.cost = mana
-        self.ctype = cardtype
-        self.cardclass = cardclass
+        self.ctype = card_type
+        self.klass = klass
         self.properties = {}
         self.register_prop('in_deck', False)
         self.register_prop('in_hand', False)
@@ -71,9 +71,9 @@ class Card(object):
 
 
 class PermanentCard(Card):
-    def __init__(self, name, mana, cardtype, cardclass, abilities, source='deck'):
-        assert type(cardtype) == int, cardtype
-        Card.__init__(self, name, mana, cardtype, cardclass, source)
+    def __init__(self, name, mana, card_type, klass, abilities, source='deck'):
+        assert type(card_type) == int, card_type
+        Card.__init__(self, name, mana, card_type, klass, source)
         self.register_prop('on_battlefield', False)
         if type(abilities) == dict:
             for i in abilities.keys():

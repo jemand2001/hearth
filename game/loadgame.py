@@ -1,12 +1,12 @@
-from .game import Game
-from .events import *
-from .board import *
-from .default_deck import make_def_deck
-from .data import CLASSES
-from .player import Player
-from card.deck import *
-from card.effects import make_effect
 from random import randint
+
+from card.deck import *
+from .board import *
+from .data import CLASSES
+from .default_deck import make_def_deck
+from .events import *
+from .game import Game
+from .player import Player
 
 
 def make_game(contents=None):
